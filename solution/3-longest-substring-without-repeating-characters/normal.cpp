@@ -1,10 +1,10 @@
 #include <string>
-#include <unordered_map>
+#include <array>
 #include <algorithm>
 
+using std::fill_n;
 using std::max;
 using std::string;
-using std::unordered_map;
 
 class Solution
 {
@@ -22,7 +22,9 @@ public:
             break;
         }
 
-        auto record = unordered_map<char, int>();
+        int record[127];
+        fill_n(record, 127, -1);
+
         auto anchor = 0;
 
         auto maximun = 0;
@@ -31,18 +33,15 @@ public:
         {
             auto current = s[i];
 
-            auto last = record.find(current);
-            if (last == record.end())
-            {
-                record.emplace(current, i);
-            }
-            else
+            auto last = record[current];
+
+            if (last != -1)
             {
                 maximun = max(maximun, i - anchor);
-                anchor = max(anchor, last->second + 1);
-
-                last->second = i;
+                anchor = max(anchor, last + 1);
             }
+
+            record[current] = i;
         }
 
         return max(maximun, end - anchor);
