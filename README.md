@@ -1,0 +1,1 @@
+VSCode -> `Ctrl-SHIF-P ` -> "CMAKE RUN"
