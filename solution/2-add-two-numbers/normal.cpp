@@ -1,4 +1,3 @@
-using namespace std;
 #include "leetcode.cpp"
 
 /**
@@ -18,8 +17,8 @@ public:
     {
         int carry = 0;
 
-        auto prefix = new ListNode();
-        auto final = prefix;
+        auto prefix = ListNode();
+        auto final = &prefix;
 
         while (true)
         {
@@ -76,6 +75,6 @@ public:
             final->next = new ListNode(1);
         }
 
-        return prefix->next;
+        return prefix.next;
     }
 };
