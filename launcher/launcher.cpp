@@ -3,6 +3,8 @@
 #include <vector>
 #include "1-two-sum/normal.cpp"
 
+using std::cout;
+
 int main(int, char **)
 {
     vector<int> input{2, 7, 11, 15};
