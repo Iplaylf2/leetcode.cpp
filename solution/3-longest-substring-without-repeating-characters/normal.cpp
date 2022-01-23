@@ -2,9 +2,10 @@
 #include <array>
 #include <algorithm>
 
-using std::fill_n;
+using std::array;
 using std::max;
 using std::string;
+using std::swap;
 
 class Solution
 {
@@ -22,8 +23,8 @@ public:
             break;
         }
 
-        int record[127];
-        fill_n(record, 127, -1);
+        auto record = array<int, 127>();
+        record.fill(-1);
 
         auto anchor = 0;
 
@@ -33,15 +34,14 @@ public:
         {
             auto current = s[i];
 
-            auto last = record[current];
+            auto last = i;
+            swap(last, record[current]);
 
             if (last != -1)
             {
                 maximun = max(maximun, i - anchor);
                 anchor = max(anchor, last + 1);
             }
-
-            record[current] = i;
         }
 
         return max(maximun, end - anchor);
