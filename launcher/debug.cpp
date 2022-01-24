@@ -7,8 +7,8 @@ using std::cout;
 
 int main(int, char **)
 {
-    auto a = vector{1, 2, 5};
-    auto b = vector{3, 4, 6, 7};
+    auto a = vector{1, 4};
+    auto b = vector{2, 3, 5, 6};
 
     cout << Solution().findMedianSortedArrays(a, b);
 }

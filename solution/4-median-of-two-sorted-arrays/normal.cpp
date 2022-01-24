@@ -62,8 +62,8 @@ private:
             auto v2 = nums2[mid_in_nums2];
             if (v2 < v1)
             {
-                auto right_test = mid_in_nums2 + 1;
-                auto v2 = nums2[right_test]; // right_test < size_2
+                auto right_test_nums2 = mid_in_nums2 + 1;
+                auto v2 = nums2[right_test_nums2]; // right_test < size_2
 
                 if (v2 < v1)
                 {
@@ -83,8 +83,8 @@ private:
                 }
                 else
                 {
-                    auto left_test = mid_in_nums2 - 1;
-                    if (left_test == size2 || nums2[left_test] <= v1)
+                    auto left_test_nums2 = mid_in_nums2 - 1;
+                    if (nums2[left_test_nums2] <= v1)
                     {
                         return v1;
                     }
@@ -122,10 +122,11 @@ private:
             {
                 auto v1 = nums1[0];
                 auto v2 = nums2[mid_in_nums2];
+                int other_mid;
+
                 if (v1 < v2)
                 {
-                    int other_mid;
-                    if (size1 == 1)
+                    if (1 == size1)
                     {
                         other_mid = v2;
                     }
@@ -139,8 +140,6 @@ private:
                 }
                 else
                 {
-                    int other_mid;
-
                     auto i2_next = mid_in_nums2 + 1;
                     if (i2_next == size2)
                     {
@@ -156,58 +155,94 @@ private:
                 }
             }
 
-            auto test_in_nums1 = mid_left - mid_in_nums2 - 1;
-            auto v1 = nums1[test_in_nums1];
+            auto left_test = mid_left - mid_in_nums2 - 1;
+            auto v1 = nums1[left_test];
             auto v2 = nums2[mid_in_nums2];
 
             if (v2 < v1)
             {
-                begin_nums2 = mid_in_nums2;
+                auto right_test_nums2 = mid_in_nums2 + 1;
+                auto v2 = nums2[right_test_nums2]; // right_test < size_2
+
+                if (v2 < v1)
+                {
+                    begin_nums2 = mid_in_nums2;
+                }
+                else
+                {
+                    auto i1_next = left_test + 1;
+
+                    int other_mid;
+                    if (i1_next == size1)
+                    {
+                        other_mid = v2;
+                    }
+                    else
+                    {
+                        auto v1_next = nums1[i1_next];
+                        other_mid = min(v1_next, v2);
+                    }
+
+                    return (v1 + other_mid) / 2.0;
+                }
             }
             else
             {
-                test_in_nums1++;
-                if (test_in_nums1 == size1)
+                auto right_test = left_test + 1;
+                if (right_test == size1)
                 {
                     auto v2_next = nums2[mid_in_nums2 + 1];
                     return (v2 + v2_next) / 2.0;
                 }
                 else
                 {
-                    v1 = nums1[test_in_nums1];
+                    auto v1 = nums1[right_test];
                     if (v1 < v2)
                     {
-                        end_nums2 = mid_in_nums2;
+                        auto left_test_nums2 = mid_in_nums2 - 1;
+                        if (left_test_nums2 < 0 || nums2[left_test_nums2] <= v1)
+                        {
+                            auto i1_next = right_test + 1;
+
+                            int other_mid;
+                            if (i1_next == size1)
+                            {
+                                other_mid = v2;
+                            }
+                            else
+                            {
+                                auto v1_next = nums1[i1_next];
+                                other_mid = min(v1_next, v2);
+                            }
+
+                            return (v1 + other_mid) / 2.0;
+                        }
+                        else
+                        {
+                            end_nums2 = mid_in_nums2;
+                        }
                     }
                     else
                     {
-                        auto v2_next = nums2[mid_in_nums2 + 1];
-                        auto other_mid = min(v1, v2_next);
+                        auto i2_next = mid_in_nums2 + 1;
+
+                        int other_mid;
+                        if (i2_next == size2)
+                        {
+                            other_mid = v1;
+                        }
+                        else
+                        {
+                            auto v2_next = nums2[i2_next];
+                            other_mid = min(v1, v2_next);
+                        }
+
                         return (v2 + other_mid) / 2.0;
                     }
                 }
             }
 
             mid_in_nums2 = (begin_nums2 + end_nums2) >> 1;
-            if (mid_in_nums2 == begin_nums2)
-            {
-                v2 = nums2[end_nums2];
-
-                int other_mid;
-
-                test_in_nums1++;
-                if (test_in_nums1 == size1)
-                {
-                    other_mid = v2;
-                }
-                else
-                {
-                    auto v1_next = nums1[test_in_nums1];
-                    other_mid = min(v1_next, v2);
-                }
-
-                return (v1 + other_mid) / 2.0;
-            }
         }
 
         return 0; //never
