@@ -51,34 +51,28 @@ private:
 
         auto mid_in_nums2 = mid_left - size1; // min index in nums2
 
-        auto v1 = nums1[size1 - 1];
-        auto v2 = nums2[mid_in_nums2];
-        if (v1 <= v2)
-        {
-            return v2;
-        }
-
         auto begin_nums2 = mid_in_nums2;
         auto end_nums2 = mid_left + 1; // max index is mid_left
-        mid_in_nums2 = (begin_nums2 + end_nums2) >> 1;
 
         while (true)
         {
-            if (mid_in_nums2 == mid_left)
-            {
-                // finally test
-                v1 = nums1[0];
-                v2 = nums2[mid_in_nums2];
-                return min(v1, v2);
-            }
-
             auto left_test = mid_left - mid_in_nums2 - 1;
 
-            v1 = nums1[left_test];
-            v2 = nums2[mid_in_nums2];
+            auto v1 = nums1[left_test]; // 0 <= left_test
+            auto v2 = nums2[mid_in_nums2];
             if (v2 < v1)
             {
-                begin_nums2 = mid_in_nums2;
+                auto right_test = mid_in_nums2 + 1;
+                auto v2 = nums2[right_test]; // right_test < size_2
+
+                if (v2 < v1)
+                {
+                    begin_nums2 = mid_in_nums2;
+                }
+                else
+                {
+                    return v1;
+                }
             }
             else
             {
@@ -89,14 +83,25 @@ private:
                 }
                 else
                 {
-                    end_nums2 = mid_in_nums2;
+                    auto left_test = mid_in_nums2 - 1;
+                    if (left_test == size2 || nums2[left_test] <= v1)
+                    {
+                        return v1;
+                    }
+                    else
+                    {
+                        end_nums2 = mid_in_nums2;
+                    }
                 }
             }
 
             mid_in_nums2 = (begin_nums2 + end_nums2) >> 1;
-            if (mid_in_nums2 == begin_nums2)
+            if (mid_in_nums2 == mid_left)
             {
-                return v1;
+                // finally test
+                auto v1 = nums1[0];
+                auto v2 = nums2[mid_in_nums2];
+                return min(v1, v2);
             }
         }
 
