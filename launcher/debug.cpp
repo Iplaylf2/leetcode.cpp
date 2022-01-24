@@ -1,10 +1,14 @@
 #include <iostream>
 #include "cout-support.cpp"
-#include "3-longest-substring-without-repeating-characters/normal.cpp"
+#include "4-median-of-two-sorted-arrays/normal.cpp"
+#include <vector>
 
 using std::cout;
 
 int main(int, char **)
 {
-    cout << Solution().lengthOfLongestSubstring("abba");
+    auto a = vector{1, 2};
+    auto b = vector{-1, 3};
+
+    cout << Solution().findMedianSortedArrays(a, b);
 }

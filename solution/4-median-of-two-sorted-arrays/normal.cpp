@@ -1,6 +1,7 @@
 #include <vector>
 #include <algorithm>
 
+using std::max;
 using std::min;
 using std::swap;
 using std::vector;
@@ -24,7 +25,7 @@ public:
             auto mid = size2 >> 1;
             if (size2 % 2 == 0)
             {
-                return (nums2[mid] + nums2[mid + 1]) / 2.0;
+                return (nums2[mid - 1] + nums2[mid]) / 2.0;
             }
             else
             {
@@ -43,7 +44,7 @@ public:
         }
     }
 
-public:
+private:
     int odd(vector<int> &nums1, vector<int> &nums2, int &size1, int &size2, int &sizeAll)
     {
         auto mid_left = sizeAll >> 1;
@@ -58,7 +59,7 @@ public:
         }
 
         auto begin_nums2 = mid_in_nums2;
-        auto end_nums2 = mid_left + 1; // max index in nums2
+        auto end_nums2 = mid_left + 1; // max index is mid_left
         mid_in_nums2 = (begin_nums2 + end_nums2) >> 1;
 
         while (true)
@@ -71,9 +72,9 @@ public:
                 return min(v1, v2);
             }
 
-            auto left_close = mid_left - mid_in_nums2 - 1;
+            auto left_test = mid_left - mid_in_nums2 - 1;
 
-            v1 = nums1[left_close];
+            v1 = nums1[left_test];
             v2 = nums2[mid_in_nums2];
             if (v2 < v1)
             {
@@ -81,16 +82,14 @@ public:
             }
             else
             {
-                auto right_close = left_close + 1;
-                v1 = nums1[right_close];
-
-                if (v1 < v2)
+                auto right_test = left_test + 1;
+                if (right_test == size1 || (v1 = nums1[right_test], v2 <= v1))
                 {
-                    end_nums2 = mid_in_nums2;
+                    return v2;
                 }
                 else
                 {
-                    return v2;
+                    end_nums2 = mid_in_nums2;
                 }
             }
 
@@ -104,7 +103,108 @@ public:
         return 0; // never
     }
 
-    int even(vector<int> &nums1, vector<int> &nums2, int &size1, int &size2, int &sizeAll)
+    double even(vector<int> &nums1, vector<int> &nums2, int &size1, int &size2, int &sizeAll)
     {
+        auto mid_left = (sizeAll >> 1) - 1;
+
+        auto mid_in_nums2 = max(0, mid_left - size1);
+        auto begin_nums2 = mid_in_nums2;
+        auto end_nums2 = mid_left + 1;
+
+        while (true)
+        {
+            if (mid_in_nums2 == mid_left)
+            {
+                auto v1 = nums1[0];
+                auto v2 = nums2[mid_in_nums2];
+                if (v1 < v2)
+                {
+                    int other_mid;
+                    if (size1 == 1)
+                    {
+                        other_mid = v2;
+                    }
+                    else
+                    {
+                        auto v1_next = nums1[1];
+                        other_mid = min(v1_next, v2);
+                    }
+
+                    return (v1 + other_mid) / 2.0;
+                }
+                else
+                {
+                    int other_mid;
+
+                    auto i2_next = mid_in_nums2 + 1;
+                    if (i2_next == size2)
+                    {
+                        other_mid = v1;
+                    }
+                    else
+                    {
+                        auto v2_next = nums2[i2_next];
+                        other_mid = min(v1, v2_next);
+                    }
+
+                    return (v2 + other_mid) / 2.0;
+                }
+            }
+
+            auto test_in_nums1 = mid_left - mid_in_nums2 - 1;
+            auto v1 = nums1[test_in_nums1];
+            auto v2 = nums2[mid_in_nums2];
+
+            if (v2 < v1)
+            {
+                begin_nums2 = mid_in_nums2;
+            }
+            else
+            {
+                test_in_nums1++;
+                if (test_in_nums1 == size1)
+                {
+                    auto v2_next = nums2[mid_in_nums2 + 1];
+                    return (v2 + v2_next) / 2.0;
+                }
+                else
+                {
+                    v1 = nums1[test_in_nums1];
+                    if (v1 < v2)
+                    {
+                        end_nums2 = mid_in_nums2;
+                    }
+                    else
+                    {
+                        auto v2_next = nums2[mid_in_nums2 + 1];
+                        auto other_mid = min(v1, v2_next);
+                        return (v2 + other_mid) / 2.0;
+                    }
+                }
+            }
+
+            mid_in_nums2 = (begin_nums2 + end_nums2) >> 1;
+            if (mid_in_nums2 == begin_nums2)
+            {
+                v2 = nums2[end_nums2];
+
+                int other_mid;
+
+                test_in_nums1++;
+                if (test_in_nums1 == size1)
+                {
+                    other_mid = v2;
+                }
+                else
+                {
+                    auto v1_next = nums1[test_in_nums1];
+                    other_mid = min(v1_next, v2);
+                }
+
+                return (v1 + other_mid) / 2.0;
+            }
+        }
+
+        return 0; //never
     }
 };
