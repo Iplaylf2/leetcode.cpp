@@ -33,14 +33,14 @@ public:
             }
         }
 
-        int sizeAll = size1 + size2;
-        if (sizeAll % 2 == 0)
+        auto size_all = size1 + size2;
+        if (size_all % 2 == 0)
         {
-            return even(nums1, nums2, size1, size2, sizeAll);
+            return even(nums1, nums2, size1, size2, size_all);
         }
         else
         {
-            return odd(nums1, nums2, size1, size2, sizeAll);
+            return odd(nums1, nums2, size1, size2, size_all);
         }
     }
 
