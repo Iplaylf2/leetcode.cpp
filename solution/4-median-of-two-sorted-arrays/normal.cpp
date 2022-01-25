@@ -51,7 +51,7 @@ private:
 
         auto mid_in_nums2 = mid_left - size1; // min index in nums2
 
-        auto begin_nums2 = mid_in_nums2;
+        int begin_nums2;
         auto end_nums2 = mid_left + 1; // max index is mid_left
 
         while (true)
@@ -113,7 +113,8 @@ private:
         auto mid_left = (sizeAll >> 1) - 1;
 
         auto mid_in_nums2 = max(0, mid_left - size1);
-        auto begin_nums2 = mid_in_nums2;
+
+        int begin_nums2;
         auto end_nums2 = mid_left + 1;
 
         while (true)

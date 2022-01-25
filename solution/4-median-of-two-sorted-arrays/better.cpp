@@ -29,7 +29,7 @@ public:
         auto J2 = size2 - half_size - 1;
 
         int begin_J2;
-        int end_J2 = half_size;
+        auto end_J2 = half_size;
 
         while (true)
         {
