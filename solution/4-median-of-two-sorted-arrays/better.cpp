@@ -1,8 +1,9 @@
 #include <vector>
-#include <climits>
+#include <limits>
 
 using std::max;
 using std::min;
+using std::numeric_limits;
 using std::swap;
 using std::vector;
 
@@ -33,9 +34,9 @@ public:
 
         while (true)
         {
-            auto left_1 = J1 == -1 ? INT_MIN : nums1[J1];
+            auto left_1 = J1 == -1 ? Int_MIN : nums1[J1];
             auto right_2_index = J2 + 1;
-            auto right_2 = right_2_index == size2 ? INT_MAX : nums2[right_2_index];
+            auto right_2 = right_2_index == size2 ? Int_MAX : nums2[right_2_index];
 
             if (right_2 < left_1)
             {
@@ -45,9 +46,9 @@ public:
             }
             else
             {
-                auto left_2 = J2 == -1 ? INT_MIN : nums2[J2];
+                auto left_2 = J2 == -1 ? Int_MIN : nums2[J2];
                 auto right_1_index = J1 + 1;
-                auto right_1 = right_1_index == size1 ? INT_MAX : nums1[right_1_index];
+                auto right_1 = right_1_index == size1 ? Int_MAX : nums1[right_1_index];
 
                 if (right_1 < left_2)
                 {
@@ -75,4 +76,8 @@ public:
 
         return 0; //never
     }
+
+private:
+    static constexpr int Int_MAX = numeric_limits<int>().max();
+    static constexpr int Int_MIN = numeric_limits<int>().min();
 };
