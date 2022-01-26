@@ -34,11 +34,11 @@ public:
 
         while (true)
         {
-            auto left_1 = J1 == -1 ? Int_MIN : nums1[J1];
-            auto right_2_index = J2 + 1;
-            auto right_2 = right_2_index == size2 ? INT_MAX : nums2[right_2_index];
+            auto left1 = J1 == -1 ? Int_MIN : nums1[J1];
+            auto right2_index = J2 + 1;
+            auto right2 = right2_index == size2 ? INT_MAX : nums2[right2_index];
 
-            if (right_2 < left_1)
+            if (right2 < left1)
             {
                 begin_J2 = J2;
                 J2 = (begin_J2 + end_J2) >> 1;
@@ -46,11 +46,11 @@ public:
             }
             else
             {
-                auto left_2 = J2 == -1 ? Int_MIN : nums2[J2];
-                auto right_1_index = J1 + 1;
-                auto right_1 = right_1_index == size1 ? INT_MAX : nums1[right_1_index];
+                auto left2 = J2 == -1 ? Int_MIN : nums2[J2];
+                auto right1_index = J1 + 1;
+                auto right1 = right1_index == size1 ? INT_MAX : nums1[right1_index];
 
-                if (right_1 < left_2)
+                if (right1 < left2)
                 {
                     end_J2 = J2;
                     J2 = (begin_J2 + end_J2) >> 1;
@@ -62,13 +62,13 @@ public:
 
                     if (size_all % 2 == 0)
                     {
-                        auto mid1 = max(left_1, left_2);
-                        auto mid2 = min(right_1, right_2);
+                        auto mid1 = max(left1, left2);
+                        auto mid2 = min(right1, right2);
                         return (mid1 + mid2) / 2.0;
                     }
                     else
                     {
-                        return min(right_1, right_2);
+                        return min(right1, right2);
                     }
                 }
             }
