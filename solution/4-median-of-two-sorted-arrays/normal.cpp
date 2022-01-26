@@ -22,7 +22,7 @@ public:
 
         if (size1 == 0)
         {
-            auto mid = size2 >> 1;
+            auto mid = size2 / 2;
             if (size2 % 2 == 0)
             {
                 return (nums2[mid - 1] + nums2[mid]) / 2.0;
@@ -47,7 +47,7 @@ public:
 private:
     int odd(vector<int> &nums1, vector<int> &nums2, int &size1, int &size2, int &sizeAll)
     {
-        auto mid_left = sizeAll >> 1;
+        auto mid_left = sizeAll / 2;
 
         auto mid_in_nums2 = mid_left - size1; // min index in nums2
 
@@ -95,7 +95,7 @@ private:
                 }
             }
 
-            mid_in_nums2 = (begin_nums2 + end_nums2) >> 1;
+            mid_in_nums2 = (begin_nums2 + end_nums2) / 2;
             if (mid_in_nums2 == mid_left)
             {
                 // finally test
@@ -110,7 +110,7 @@ private:
 
     double even(vector<int> &nums1, vector<int> &nums2, int &size1, int &size2, int &sizeAll)
     {
-        auto mid_left = (sizeAll >> 1) - 1;
+        auto mid_left = (sizeAll / 2) - 1;
 
         auto mid_in_nums2 = max(0, mid_left - size1);
 
@@ -243,7 +243,7 @@ private:
                 }
             }
 
-            mid_in_nums2 = (begin_nums2 + end_nums2) >> 1;
+            mid_in_nums2 = (begin_nums2 + end_nums2) / 2;
         }
 
         return 0; //never
