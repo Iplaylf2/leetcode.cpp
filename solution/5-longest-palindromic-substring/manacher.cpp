@@ -28,7 +28,7 @@ public:
             auto virtual_radius = mirror < 0 ? 0 : radius_record[mirror] * 2;
 
             auto right = (i + virtual_radius) / 2;
-            if (farthest_vertex <= right && virtual_radius != 0)
+            if (virtual_radius != 0 && farthest_vertex <= right)
             {
                 continue;
             }
