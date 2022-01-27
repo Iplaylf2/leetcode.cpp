@@ -41,9 +41,13 @@ public:
             {
                 maximun = max(maximun, i - anchor);
                 anchor = max(anchor, last + 1);
+                if (end - anchor <= maximun)
+                {
+                    return maximun;
+                }
             }
         }
 
-        return max(maximun, end - anchor);
+        return end - anchor;
     }
 };
