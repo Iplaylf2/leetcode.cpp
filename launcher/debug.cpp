@@ -6,5 +6,5 @@ using std::cout;
 
 int main(int, char **)
 {
-    cout << Solution().longestPalindrome("ccc");
+    cout << Solution().longestPalindrome("bb");
 }
