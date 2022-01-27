@@ -1,24 +1,20 @@
 #include <string>
-#include <array>
+#include <vector>
 
-using std::array;
 using std::string;
+using std::vector;
 
 class Solution
 {
 public:
     string longestPalindrome(string s)
     {
-        int size = s.size();
-        if (size == 1)
-        {
-            return s;
-        }
-
         auto longest_begin = 0;
         auto longest_value = 1;
 
+        int size = s.size();
         auto virtual_size = size * 2 - 1;
+        auto radius_record = vector<int>(virtual_size);
 
         auto farthest_vertex = 0;
         auto center = 0;
@@ -57,7 +53,4 @@ public:
 
         return s.substr(longest_begin, longest_value);
     }
-
-private:
-    array<int, 1000 * 2 - 1> radius_record;
 };
