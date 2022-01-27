@@ -14,7 +14,7 @@ public:
 
         int size = s.size();
         auto virtual_size = size * 2 - 1;
-        auto radius_record = vector<int>(virtual_size);
+        auto radius_record = new int[virtual_size]{0};
 
         auto farthest_vertex = 0;
         auto center = 0;
@@ -50,6 +50,8 @@ public:
                 farthest_vertex = right;
             }
         }
+
+        delete[] radius_record;
 
         return s.substr(longest_begin, longest_value);
     }
