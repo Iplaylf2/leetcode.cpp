@@ -23,14 +23,14 @@ public:
             break;
         }
 
-        auto record = array<int, 127>();
+        array<int, 127> record;
         record.fill(-1);
 
         auto anchor = 0;
 
         auto maximun = 0;
 
-        for (int i = 0; i != end; i++)
+        for (auto i = 0; i != end; i++)
         {
             auto current = s[i];
 
@@ -41,9 +41,13 @@ public:
             {
                 maximun = max(maximun, i - anchor);
                 anchor = max(anchor, last + 1);
+                if (end - anchor <= maximun)
+                {
+                    return maximun;
+                }
             }
         }
 
-        return max(maximun, end - anchor);
+        return end - anchor;
     }
 };

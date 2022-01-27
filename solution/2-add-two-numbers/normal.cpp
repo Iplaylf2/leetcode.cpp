@@ -15,7 +15,7 @@ class Solution
 public:
     ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
     {
-        int carry = 0;
+        auto carry = 0;
 
         auto prefix = ListNode();
         auto final = &prefix;

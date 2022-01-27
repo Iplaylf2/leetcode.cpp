@@ -1,8 +1,9 @@
 #include <vector>
-#include <climits>
+#include <limits>
 
 using std::max;
 using std::min;
+using std::numeric_limits;
 using std::swap;
 using std::vector;
 
@@ -21,7 +22,7 @@ public:
         }
 
         auto size_all = size1 + size2;
-        auto half_size = (size_all + 1) >> 1;
+        auto half_size = (size_all + 1) / 2;
 
         //  oooI -> ooD     ; oooI -> ooD
         // Ixxxx ->   Jxxxx ; Ixxx ->   Jxxx
@@ -33,26 +34,26 @@ public:
 
         while (true)
         {
-            auto left_1 = J1 == -1 ? INT_MIN : nums1[J1];
-            auto right_2_index = J2 + 1;
-            auto right_2 = right_2_index == size2 ? INT_MAX : nums2[right_2_index];
+            auto left1 = J1 == -1 ? INT_MIN : nums1[J1];
+            auto right2_index = J2 + 1;
+            auto right2 = right2_index == size2 ? INT_MAX : nums2[right2_index];
 
-            if (right_2 < left_1)
+            if (right2 < left1)
             {
                 begin_J2 = J2;
-                J2 = (begin_J2 + end_J2) >> 1;
+                J2 = (begin_J2 + end_J2) / 2;
                 J1 += begin_J2 - J2;
             }
             else
             {
-                auto left_2 = J2 == -1 ? INT_MIN : nums2[J2];
-                auto right_1_index = J1 + 1;
-                auto right_1 = right_1_index == size1 ? INT_MAX : nums1[right_1_index];
+                auto left2 = J2 == -1 ? INT_MIN : nums2[J2];
+                auto right1_index = J1 + 1;
+                auto right1 = right1_index == size1 ? INT_MAX : nums1[right1_index];
 
-                if (right_1 < left_2)
+                if (right1 < left2)
                 {
                     end_J2 = J2;
-                    J2 = (begin_J2 + end_J2) >> 1;
+                    J2 = (begin_J2 + end_J2) / 2;
                     J1 += end_J2 - J2;
                 }
                 else
@@ -61,13 +62,13 @@ public:
 
                     if (size_all % 2 == 0)
                     {
-                        auto mid1 = max(left_1, left_2);
-                        auto mid2 = min(right_1, right_2);
+                        auto mid1 = max(left1, left2);
+                        auto mid2 = min(right1, right2);
                         return (mid1 + mid2) / 2.0;
                     }
                     else
                     {
-                        return min(right_1, right_2);
+                        return min(right1, right2);
                     }
                 }
             }
@@ -75,4 +76,8 @@ public:
 
         return 0; //never
     }
+
+private:
+    static constexpr int INT_MAX = numeric_limits<int>().max();
+    static constexpr int INT_MIN = numeric_limits<int>().min();
 };
