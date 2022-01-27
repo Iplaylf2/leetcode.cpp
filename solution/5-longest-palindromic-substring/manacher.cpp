@@ -17,19 +17,32 @@ public:
         auto radius_record = new int[virtual_size]{0};
 
         auto farthest_vertex = 0;
-        auto center = 0;
+        int virtual_center_of_farthest_vertex;
         for (auto i = 1, end = virtual_size; i < end; i++)
         {
-            auto mirror = 2 * center - i;
-            auto virtual_radius = mirror < 0 ? 0 : radius_record[mirror] * 2;
+            int left;
+            int right;
+            auto center = i / 2;
 
-            auto right = (i + virtual_radius) / 2;
-            if (virtual_radius != 0 && farthest_vertex <= right)
+            if (center < farthest_vertex)
             {
-                continue;
+                auto mirror = 2 * virtual_center_of_farthest_vertex - i;
+                auto radius = radius_record[mirror];
+                right = center + radius;
+                if (farthest_vertex < right)
+                {
+                    continue;
+                }
+                else
+                {
+                    left = center + i % 2 - radius;
+                }
             }
-
-            auto left = (i - virtual_radius + 1) / 2;
+            else
+            {
+                right = center;
+                left = center + i % 2;
+            }
 
             for (left--, right++; 0 <= left && right < size && s[left] == s[right]; left--, right++)
                 ;
@@ -44,9 +57,10 @@ public:
                 end = virtual_size - longest_value;
             }
 
+            right--;
             if (farthest_vertex < right)
             {
-                center = i;
+                virtual_center_of_farthest_vertex = i;
                 farthest_vertex = right;
             }
         }
