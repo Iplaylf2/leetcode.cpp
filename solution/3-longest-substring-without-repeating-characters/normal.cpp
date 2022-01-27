@@ -10,6 +10,8 @@ using std::swap;
 class Solution
 {
 public:
+    static array<int, 127> record;
+
     int lengthOfLongestSubstring(string s)
     {
         int end = s.size();
@@ -23,14 +25,13 @@ public:
             break;
         }
 
-        auto record = array<int, 127>();
         record.fill(-1);
 
         auto anchor = 0;
 
         auto maximun = 0;
 
-        for (int i = 0; i != end; i++)
+        for (auto i = 0; i != end; i++)
         {
             auto current = s[i];
 
@@ -51,3 +52,5 @@ public:
         return end - anchor;
     }
 };
+
+array<int, 127> Solution::record = {};
