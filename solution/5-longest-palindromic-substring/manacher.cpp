@@ -37,9 +37,10 @@ public:
                 left = (i - virtual_radius - 1) / 2;
                 right = (i + virtual_radius) / 2 + 1;
 
+                // should it test?
                 if (center_of_farthest_vertex < left && right <= farthest_vertex)
                 {
-                    radius_record[i] = (right - left + 1) / 2;
+                    radius_record[i] = radius;
                     continue;
                 }
 
