@@ -13,42 +13,54 @@ public:
         auto longest_value = 1;
 
         int size = s.size();
-        auto virtual_size = size * 2 - 1;
-        auto radius_record = new int[virtual_size]{0};
+        auto virtual_size = 2 * size - 1;
+        auto radius_record = new int[virtual_size];
 
         auto farthest_vertex = 0;
         int virtual_center_of_farthest_vertex;
-        for (auto i = 1, end = virtual_size; i < end; i++)
+        int center_of_farthest_vertex;
+        for (auto i = 1, end = virtual_size;
+             i < end;
+             i++)
         {
+            auto center = i / 2;
+
             int left;
             int right;
-            auto center = i / 2;
 
             if (center < farthest_vertex)
             {
                 auto mirror = 2 * virtual_center_of_farthest_vertex - i;
                 auto radius = radius_record[mirror];
-                right = center + radius;
-                if (farthest_vertex < right)
+                auto virtual_radius = 2 * radius;
+
+                left = (i - virtual_radius - 1) / 2;
+                right = (i + virtual_radius) / 2 + 1;
+
+                if (center_of_farthest_vertex < left && right <= farthest_vertex)
                 {
+                    radius_record[i] = (right - left + 1) / 2;
                     continue;
                 }
-                else
+
+                if (farthest_vertex < right - 1)
                 {
-                    left = center + i % 2 - radius;
+                    radius_record[i] = farthest_vertex - center;
+                    continue;
                 }
             }
             else
             {
-                right = center;
-                left = center + i % 2;
+                left = (i - 1) / 2;
+                right = center + 1;
             }
 
-            for (left--, right++; 0 <= left && right < size && s[left] == s[right]; left--, right++)
+            for (; 0 <= left && right < size && s[left] == s[right]; left--, right++)
                 ;
 
             auto length = right - left - 1;
-            radius_record[i] = length / 2;
+            auto radius = length / 2;
+            radius_record[i] = radius;
 
             if (longest_value < length)
             {
@@ -61,6 +73,7 @@ public:
             if (farthest_vertex < right)
             {
                 virtual_center_of_farthest_vertex = i;
+                center_of_farthest_vertex = i / 2;
                 farthest_vertex = right;
             }
         }
