@@ -1,10 +1,10 @@
 #include <iostream>
-#include "5-longest-palindromic-substring/manacher.cpp"
+#include "6-zigzag-conversion/normal.cpp"
 #include <vector>
 
 using std::cout;
 
 int main(int, char **)
 {
-    cout << Solution().longestPalindrome("aaaaxaaaqzzzzzzzz");
+    cout << Solution().convert("012345678", 2);
 }
