@@ -37,9 +37,10 @@ public:
                 left = (i - virtual_radius - 1) / 2;
                 right = (i + virtual_radius) / 2 + 1;
 
+                // should it test?
                 if (center_of_farthest_vertex < left && right <= farthest_vertex)
                 {
-                    radius_record[i] = (right - left + 1) / 2;
+                    radius_record[i] = radius;
                     continue;
                 }
 
@@ -58,22 +59,24 @@ public:
             for (; 0 <= left && right < size && s[left] == s[right]; left--, right++)
                 ;
 
-            auto length = right - left - 1;
+            right--;
+
+            auto length = right - left;
             auto radius = length / 2;
             radius_record[i] = radius;
 
-            if (longest_value < length)
-            {
-                longest_begin = left + 1;
-                longest_value = length;
-                end = virtual_size - longest_value;
-            }
-
-            right--;
             if (farthest_vertex < right)
             {
                 virtual_center_of_farthest_vertex = i;
                 center_of_farthest_vertex = i / 2;
+
+                if (longest_value < length)
+                {
+                    longest_begin = left + 1;
+                    longest_value = length;
+                    end = virtual_size - longest_value;
+                }
+
                 farthest_vertex = right;
             }
         }
