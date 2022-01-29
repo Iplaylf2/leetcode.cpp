@@ -6,5 +6,5 @@ using std::cout;
 
 int main(int, char **)
 {
-    cout << Solution().convert("012345678", 2);
+    cout << Solution().convert("A", 2);
 }
