@@ -1,10 +1,9 @@
 #include <iostream>
-#include "6-zigzag-conversion/normal.cpp"
-#include <vector>
+#include "7-reverse-integer/normal.cpp"
 
 using std::cout;
 
 int main(int, char **)
 {
-    cout << Solution().convert("A", 2);
+    cout << Solution().reverse(-2147483412);
 }
