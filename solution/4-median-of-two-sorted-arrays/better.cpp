@@ -1,9 +1,8 @@
 #include <vector>
-#include <limits>
+#include <cmath>
 
 using std::max;
 using std::min;
-using std::numeric_limits;
 using std::swap;
 using std::vector;
 
@@ -76,8 +75,4 @@ public:
 
         return 0; //never
     }
-
-private:
-    static constexpr int INT_MAX = numeric_limits<int>().max();
-    static constexpr int INT_MIN = numeric_limits<int>().min();
 };
