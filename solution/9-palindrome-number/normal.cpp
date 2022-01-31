@@ -19,9 +19,7 @@ public:
             return false;
         }
 
-        x /= 10;
-
-        for (;
+        for (x /= 10;
              right < x;
              right = 10 * right + x % 10, x /= 10)
             ;
