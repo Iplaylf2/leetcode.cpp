@@ -1,9 +1,10 @@
 #include <iostream>
-#include "7-reverse-integer/normal.cpp"
+#include "8-string-to-integer-atoi/normal.cpp"
 
 using std::cout;
 
 int main(int, char **)
 {
-    cout << Solution().reverse(-2147483412);
+
+    cout << Solution().myAtoi("-42");
 }
