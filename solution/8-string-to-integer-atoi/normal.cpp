@@ -11,15 +11,17 @@ public:
         long result = 0;
         auto sign = false;
 
-        auto begin = s.begin();
-        auto end = s.end();
+        auto begin = s.data();
 
-        for (; begin != end; begin++)
+        while (true)
         {
-            auto x = *begin;
-            if (x != ' ')
+            if (*begin != ' ')
             {
                 break;
+            }
+            else
+            {
+                begin++;
             }
         }
 
@@ -45,9 +47,9 @@ public:
 
         if (sign)
         {
-            for (; begin != end; begin++)
+            while (true)
             {
-                auto x = *begin;
+                x = *begin;
                 if ('0' <= x && x <= '9')
                 {
                     result = 10 * result - (x - '0');
@@ -55,6 +57,7 @@ public:
                     {
                         return INT_MIN;
                     }
+                    begin++;
                 }
                 else
                 {
@@ -64,9 +67,9 @@ public:
         }
         else
         {
-            for (; begin != end; begin++)
+            while (true)
             {
-                auto x = *begin;
+                x = *begin;
                 if ('0' <= x && x <= '9')
                 {
                     result = 10 * result + (x - '0');
@@ -74,6 +77,7 @@ public:
                     {
                         return INT_MAX;
                     }
+                    begin++;
                 }
                 else
                 {
