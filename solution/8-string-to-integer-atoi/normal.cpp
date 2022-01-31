@@ -11,34 +11,34 @@ public:
         long result = 0;
         auto sign = false;
 
-        auto begin = s.data();
+        auto s_ptr = s.data();
 
         while (true)
         {
-            if (*begin != ' ')
+            if (*s_ptr != ' ')
             {
                 break;
             }
             else
             {
-                begin++;
+                s_ptr++;
             }
         }
 
-        auto x = *begin;
+        auto x = *s_ptr;
         if ('0' <= x && x <= '9')
         {
             result = (x - '0');
-            begin++;
+            s_ptr++;
         }
         else if (x == '-')
         {
             sign = true;
-            begin++;
+            s_ptr++;
         }
         else if (x == '+')
         {
-            begin++;
+            s_ptr++;
         }
         else
         {
@@ -49,7 +49,7 @@ public:
         {
             while (true)
             {
-                x = *begin;
+                x = *s_ptr;
                 if ('0' <= x && x <= '9')
                 {
                     result = 10 * result - (x - '0');
@@ -57,7 +57,7 @@ public:
                     {
                         return INT_MIN;
                     }
-                    begin++;
+                    s_ptr++;
                 }
                 else
                 {
@@ -69,7 +69,7 @@ public:
         {
             while (true)
             {
-                x = *begin;
+                x = *s_ptr;
                 if ('0' <= x && x <= '9')
                 {
                     result = 10 * result + (x - '0');
@@ -77,7 +77,7 @@ public:
                     {
                         return INT_MAX;
                     }
-                    begin++;
+                    s_ptr++;
                 }
                 else
                 {
