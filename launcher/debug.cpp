@@ -1,10 +1,10 @@
 #include <iostream>
-#include "8-string-to-integer-atoi/normal.cpp"
+#include "10-regular-expression-matching/normal.cpp"
 
 using std::cout;
 
 int main(int, char **)
 {
 
-    cout << Solution().myAtoi("-42");
+    cout << Solution().isMatch("abbabaaaaaaacaa", "a*.*b.a.*c*b*a*c*");
 }
