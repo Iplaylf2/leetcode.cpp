@@ -159,9 +159,9 @@ private:
                     }
                 } while ('\0' != *s);
             }
-        }
 
-        return false;
+            return allowToIgnore(end, begin);
+        }
     }
 
     static bool allowToIgnore(const vector<Pattern>::const_iterator &end, vector<Pattern>::const_iterator &begin)
