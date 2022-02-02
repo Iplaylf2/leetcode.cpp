@@ -5,6 +5,5 @@ using std::cout;
 
 int main(int, char **)
 {
-
     cout << Solution().isMatch("aaa", "ab*ac*a");
 }

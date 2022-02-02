@@ -50,7 +50,7 @@ private:
             switch (expect)
             {
             case '\0':
-                return pattern_vec;
+                goto finish;
             case '.':
             {
                 p_ptr++;
@@ -94,7 +94,68 @@ private:
             }
         }
 
-        return {}; // never
+    finish:
+        auto simple_pattern_vec = vector<Pattern>();
+
+        auto pattern_group = vector<Pattern>();
+        auto last_asterisk = '\0';
+        auto group_is_any = false;
+        for (auto x : pattern_vec)
+        {
+            if (x.one)
+            {
+                if (group_is_any)
+                {
+                    simple_pattern_vec.push_back(Pattern(false));
+                    group_is_any = false;
+                }
+                else
+                {
+                    simple_pattern_vec.insert(simple_pattern_vec.end(), pattern_group.begin(), pattern_group.end());
+                    pattern_group.clear();
+                    last_asterisk = '\0';
+                }
+
+                simple_pattern_vec.push_back(x);
+            }
+            else
+            {
+                if (group_is_any)
+                {
+                    continue;
+                }
+
+                if (x.expectIsAny)
+                {
+                    pattern_group.clear();
+                    last_asterisk = '\0';
+                    group_is_any = true;
+                }
+                else
+                {
+                    if (last_asterisk == x.expect)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        pattern_group.push_back(x);
+                        last_asterisk = x.expect;
+                    }
+                }
+            }
+        }
+
+        if (group_is_any)
+        {
+            simple_pattern_vec.push_back(Pattern(false));
+        }
+        else
+        {
+            simple_pattern_vec.insert(simple_pattern_vec.end(), pattern_group.begin(), pattern_group.end());
+        }
+
+        return simple_pattern_vec;
     }
 
     static bool match(const vector<Pattern> &patternVec, int pIndex, const string &s, int sIndex, Cache *record)
