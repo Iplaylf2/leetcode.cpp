@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
+#include <array>
 
+using std::fill_n;
 using std::string;
 using std::vector;
 
@@ -11,7 +13,11 @@ public:
 
     bool match(const string &x)
     {
-        return match(patternVec.end(), patternVec.begin(), x.data());
+        auto size = patternVec.size() * x.length();
+        Cache record[size];
+        fill_n(record, size, Cache::None);
+
+        return match(patternVec, 0, x, 0, record);
     }
 
 private:
@@ -24,6 +30,13 @@ private:
         bool one;
         bool expectIsAny;
         char expect;
+    };
+
+    enum Cache
+    {
+        None,
+        False,
+        True,
     };
 
     static vector<Pattern> createPatternVector(const string &p)
@@ -84,97 +97,141 @@ private:
         return {}; // never
     }
 
-    static bool match(const vector<Pattern>::const_iterator &end, vector<Pattern>::const_iterator begin, const char *s)
+    static bool match(const vector<Pattern> &patternVec, int pIndex, const string &s, int sIndex, Cache *record)
     {
-        auto pattern = *begin;
+        auto result = false;
+        auto key = s.length() * pIndex + sIndex;
+
+        auto pattern = patternVec[pIndex];
         if (pattern.one)
         {
-            if ((!pattern.expectIsAny) && (pattern.expect != *s))
+            if ((!pattern.expectIsAny) && (pattern.expect != s[sIndex]))
             {
-                return false;
+                goto finish;
             }
 
-            begin++;
-            s++;
+            pIndex++;
+            sIndex++;
 
-            if (end == begin)
+            if (patternVec.size() == pIndex)
             {
-                return '\0' == *s;
+                result = s.length() == sIndex;
             }
             else
             {
-                return '\0' == *s ? allowToIgnore(end, begin) : match(end, begin, s);
+                result = s.length() == sIndex ? allowToIgnore(patternVec, pIndex) : match(patternVec, pIndex, s, sIndex, record);
             }
         }
         else
         {
-            begin++;
+            pIndex++;
 
             if (pattern.expectIsAny)
             {
-                if (end == begin)
+                if (patternVec.size() == pIndex)
                 {
-                    return true;
+                    result = true;
+                    goto finish;
                 }
 
                 do
                 {
-                    auto fork = match(end, begin, s);
+                    bool fork = false;
+
+                    auto key = s.length() * pIndex + sIndex;
+                    auto cache = record[key];
+                    switch (cache)
+                    {
+                    case Cache::None:
+                        fork = match(patternVec, pIndex, s, sIndex, record);
+                        record[key] = fork ? Cache::True : Cache::False;
+                        break;
+                    case Cache::False:
+                        break;
+                    case Cache::True:
+                        fork = true;
+                        break;
+                    }
+
                     if (fork)
                     {
-                        return true;
+                        result = true;
+                        goto finish;
                     }
                     else
                     {
-                        s++;
+                        sIndex++;
                     }
-                } while ('\0' != *s);
+                } while (s.length() != sIndex);
             }
             else
             {
-                if (end == begin)
+                if (patternVec.size() == pIndex)
                 {
-                    for (; pattern.expect == *s; s++)
+                    for (; pattern.expect == s[sIndex]; sIndex++)
                         ;
-                    return '\0' == *s;
+                    result = s.length() == sIndex;
+                    goto finish;
                 }
 
                 do
                 {
-                    auto fork = match(end, begin, s);
+
+                    bool fork = false;
+
+                    auto key = s.length() * pIndex + sIndex;
+                    auto cache = record[key];
+                    switch (cache)
+                    {
+                    case Cache::None:
+                        fork = match(patternVec, pIndex, s, sIndex, record);
+                        record[key] = fork ? Cache::True : Cache::False;
+                        break;
+                    case Cache::False:
+                        break;
+                    case Cache::True:
+                        fork = true;
+                        break;
+                    }
+
                     if (fork)
                     {
-                        return true;
+                        result = true;
+                        goto finish;
                     }
                     else
                     {
-                        if (pattern.expect == *s)
+                        if (pattern.expect == s[sIndex])
                         {
-                            s++;
+                            sIndex++;
                         }
                         else
                         {
-                            return false;
+                            goto finish;
                         }
                     }
-                } while ('\0' != *s);
+                } while (s.length() != sIndex);
             }
 
-            return allowToIgnore(end, begin);
+            result = allowToIgnore(patternVec, pIndex);
         }
+
+    finish:
+        record[key] = result ? Cache::True : Cache::False;
+        return result;
     }
 
-    static bool allowToIgnore(const vector<Pattern>::const_iterator &end, vector<Pattern>::const_iterator &begin)
+    static bool allowToIgnore(const vector<Pattern> &patternVec, int pIndex)
     {
         do
         {
-            if (begin->one)
+            if (patternVec[pIndex].one)
             {
                 return false;
             }
 
-            begin++;
-        } while (end != begin);
+            pIndex++;
+        } while (patternVec.size() != pIndex);
 
         return true;
     }
