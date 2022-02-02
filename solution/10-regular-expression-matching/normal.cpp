@@ -160,7 +160,7 @@ private:
 
     static bool match(const vector<Pattern> &patternVec, int pIndex, const string &s, int sIndex, Cache *record)
     {
-        auto result = false;
+        bool result;
         auto key = s.length() * pIndex + sIndex;
 
         auto pattern = patternVec[pIndex];
@@ -168,6 +168,7 @@ private:
         {
             if ((!pattern.expectIsAny) && (pattern.expect != s[sIndex]))
             {
+                result = false;
                 goto finish;
             }
 
@@ -197,7 +198,7 @@ private:
 
                 do
                 {
-                    bool fork = false;
+                    bool fork;
 
                     auto key = s.length() * pIndex + sIndex;
                     auto cache = record[key];
@@ -208,6 +209,7 @@ private:
                         record[key] = fork ? Cache::True : Cache::False;
                         break;
                     case Cache::False:
+                        fork = false;
                         break;
                     case Cache::True:
                         fork = true;
@@ -237,8 +239,7 @@ private:
 
                 do
                 {
-
-                    bool fork = false;
+                    bool fork;
 
                     auto key = s.length() * pIndex + sIndex;
                     auto cache = record[key];
@@ -249,6 +250,7 @@ private:
                         record[key] = fork ? Cache::True : Cache::False;
                         break;
                     case Cache::False:
+                        fork = false;
                         break;
                     case Cache::True:
                         fork = true;
@@ -268,6 +270,7 @@ private:
                         }
                         else
                         {
+                            result = false;
                             goto finish;
                         }
                     }
