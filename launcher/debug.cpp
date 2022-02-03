@@ -1,9 +1,11 @@
 #include <iostream>
-#include "12-integer-to-roman/normal.cpp"
+#include "15-3sum/normal.cpp"
+#include "cout-support.cpp"
 
 using std::cout;
 
 int main(int, char **)
 {
-    cout << Solution().intToRoman(58);
+    auto foo = vector<int>({0});
+    cout << Solution().threeSum(foo);
 }
