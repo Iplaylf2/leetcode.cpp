@@ -53,10 +53,10 @@ public:
             }
 
             auto second_index = first_index + 1;
-            auto second_high = min(max_second, (0 - first) / 2);
-            auto second_low = 0 - first - maximum;
+            auto second_left = 0 - first - maximum;
+            auto second_right = min(max_second, (0 - first) / 2);
             auto second = nums[second_index];
-            for (auto limit = min(second_low, second_high); second < limit; second_index++, second = nums[second_index])
+            for (auto limit = min(second_left, second_right); second < limit; second_index++, second = nums[second_index])
                 ;
 
             auto last_second = INT_MIN;
@@ -98,12 +98,12 @@ public:
                 } while (low < third_index);
             };
 
-            for (; second < second_high; second_index++, second = nums[second_index])
+            for (; second < second_right; second_index++, second = nums[second_index])
             {
                 check_second();
             }
 
-            if (second == second_high)
+            if (second == second_right)
             {
                 check_second();
             }
