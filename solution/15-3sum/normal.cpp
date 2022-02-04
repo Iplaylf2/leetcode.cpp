@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
+using std::min;
 using std::sort;
 using std::vector;
 
@@ -18,8 +19,8 @@ public:
 
         sort(nums.begin(), nums.end());
 
-        auto max = nums.back();
-        if (max <= 0)
+        auto max_target = nums.back();
+        if (max_target <= 0)
         {
             if (nums[size - 3] == 0)
             {
@@ -33,20 +34,17 @@ public:
 
         auto result = vector<vector<int>>();
         auto first_index = 0;
+        auto first = nums[first_index];
+        auto max_first = min(0, nums[size - 3]);
         auto last_first = INT_MIN;
-        auto first_end = size - 2;
-        auto second_end = size - 1;
-        do
+        auto max_second = nums[size - 2];
+        auto third_end = size - 1;
+
+        auto check_first = [&]()
         {
-            auto first = nums[first_index];
-            if (0 < first)
-            {
-                break;
-            }
             if (last_first == first)
             {
-                first_index++;
-                continue;
+                return;
             }
             else
             {
@@ -54,14 +52,15 @@ public:
             }
 
             auto second_index = first_index + 1;
+            auto second = nums[second_index];
+            auto second_limit = min(max_second, (0 - first) / 2);
             auto last_second = INT_MIN;
-            do
+
+            auto check_second = [&]()
             {
-                auto second = nums[second_index];
                 if (last_second == second)
                 {
-                    second_index++;
-                    continue;
+                    return;
                 }
                 else
                 {
@@ -69,19 +68,14 @@ public:
                 }
 
                 auto target = 0 - first - second;
-                if (target < second)
-                {
-                    break;
-                }
 
-                if (max < target)
+                if (max_target < target)
                 {
-                    second_index++;
-                    continue;
+                    return;
                 }
 
                 auto low = second_index;
-                auto high = second_end;
+                auto high = third_end;
                 auto third_index = high;
                 do
                 {
@@ -102,12 +96,28 @@ public:
 
                     third_index = (low + high) / 2;
                 } while (low < third_index);
+            };
 
-                second_index++;
-            } while (second_end != second_index);
+            for (; second < second_limit; second_index++, second = nums[second_index])
+            {
+                check_second();
+            }
 
-            first_index++;
-        } while (first_end != first_index);
+            if (second == second_limit)
+            {
+                check_second();
+            }
+        };
+
+        for (; first < max_first; first_index++, first = nums[first_index])
+        {
+            check_first();
+        }
+
+        if (first == max_first)
+        {
+            check_first();
+        }
 
         return result;
     }
