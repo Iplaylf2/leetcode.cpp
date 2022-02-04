@@ -11,10 +11,12 @@ class Solution
 public:
     vector<vector<int>> threeSum(vector<int> &nums)
     {
+        auto result = vector<vector<int>>();
+
         auto size = (int)nums.size();
-        if (nums.size() < 3)
+        if (size < 3)
         {
-            return {};
+            return result;
         }
 
         sort(nums.begin(), nums.end());
@@ -24,15 +26,12 @@ public:
         {
             if (nums[size - 3] == 0)
             {
-                return {{0, 0, 0}};
+                result.push_back({0, 0, 0});
             }
-            else
-            {
-                return {};
-            }
+
+            return result;
         }
 
-        auto result = vector<vector<int>>();
         auto first_index = 0;
         auto max_first = min(0, nums[size - 3]);
         auto first = nums[first_index];
@@ -103,10 +102,7 @@ public:
                 check_second();
             }
 
-            if (second == second_right)
-            {
-                check_second();
-            }
+            check_second();
         };
 
         for (; first < max_first; first_index++, first = nums[first_index])
@@ -114,10 +110,7 @@ public:
             check_first();
         }
 
-        if (first == max_first)
-        {
-            check_first();
-        }
+        check_first();
 
         return result;
     }
