@@ -90,8 +90,8 @@ public:
         auto first_index = findGreater(distinct, -1, distinct_size, min_first - 1);
 
         auto max_first = 0;
-        auto first_end = findLess(distinct, -1, distinct_size, max_first + 1);
-        for (; first_index <= first_end; first_index++)
+        auto first_limit = findLess(distinct, -1, distinct_size, max_first + 1);
+        for (; first_index <= first_limit; first_index++)
         {
             auto first = distinct[first_index];
             auto rest = 0 - first;
@@ -102,8 +102,8 @@ public:
             auto second_index = findGreater(distinct, second_index_previous, distinct_size, min_second - 1);
 
             auto max_second = rest / 2; //  second <= 0 - first - second
-            auto second_end = findLess(distinct, second_index_previous, distinct_size, max_second + 1);
-            for (; second_index <= second_end; second_index++)
+            auto second_limit = findLess(distinct, second_index_previous, distinct_size, max_second + 1);
+            for (; second_index <= second_limit; second_index++)
             {
                 auto second = distinct[second_index];
                 auto third = rest - second;
