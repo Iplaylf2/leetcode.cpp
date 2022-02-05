@@ -21,60 +21,60 @@ public:
 
         sort(nums.begin(), nums.end());
 
+        auto minimum = nums.front();
         auto maximum = nums.back();
-        if (maximum <= 0)
+        if (0 < minimum)
         {
-            if (nums[size - 3] == 0)
-            {
-                result.push_back({0, 0, 0});
-            }
-
             return result;
         }
 
-        auto first_index = 0;
-        auto max_first = min(0, nums[size - 3]);
-        auto first = nums[first_index];
+        auto first_end = size - 2;
+        auto second_end = size - 1;
+
+        auto min_first = -2 * maximum; // 0 - first <= 2 * maximum
+        auto first_index = findGreater(nums, -1, first_end, min_first - 1);
+
+        auto max_first = 0;
+        auto first_limit = findLess(nums, -1, first_end, max_first + 1);
 
         auto last_first = INT_MIN;
-        auto max_second = nums[size - 2];
-        auto third_end = size - 1;
-
-        auto check_first = [&]()
+        for (; first_index <= first_limit; first_index++)
         {
+            auto first = nums[first_index];
             if (last_first == first)
             {
-                return;
+                continue;
             }
             else
             {
                 last_first = first;
             }
 
-            auto second_index = first_index + 1;
-            auto second_left = 0 - first - maximum;
-            auto second_right = min(max_second, (0 - first) / 2);
-            auto second = nums[second_index];
-            for (auto limit = min(second_left, second_right); second < limit; second_index++, second = nums[second_index])
-                ;
+            auto rest = 0 - first;
+
+            auto min_second = rest - maximum; //  0 - first - second <= maximum
+            auto second_index = findGreater(nums, first_index, second_end, min_second - 1);
+
+            auto max_second = rest / 2; //  second <= 0 - first - second
+            auto second_limit = findLess(nums, first_index, second_end, max_second + 1);
 
             auto last_second = INT_MIN;
-
-            auto check_second = [&]()
+            for (; second_index <= second_limit; second_index++)
             {
+                auto second = nums[second_index];
                 if (last_second == second)
                 {
-                    return;
+                    continue;
                 }
                 else
                 {
                     last_second = second;
                 }
 
-                auto target = 0 - first - second;
+                auto target = rest - second;
 
                 auto low = second_index;
-                auto high = third_end;
+                auto high = second_end;
                 auto third_index = high;
                 do
                 {
@@ -95,23 +95,74 @@ public:
 
                     third_index = (low + high) / 2;
                 } while (low < third_index);
-            };
-
-            for (; second < second_right; second_index++, second = nums[second_index])
-            {
-                check_second();
             }
-
-            check_second();
-        };
-
-        for (; first < max_first; first_index++, first = nums[first_index])
-        {
-            check_first();
         }
 
-        check_first();
-
         return result;
+    }
+
+private:
+    static int findLess(vector<int> &nums, const int low, const int high, int x)
+    {
+        auto _low = low;
+        auto _high = high;
+        for (auto current = (_low + _high) / 2; _low < current; current = (_low + _high) / 2)
+        {
+            if (nums[current] < x)
+            {
+                auto next = current + 1;
+                if (_high == next)
+                {
+                    return current;
+                }
+
+                if (nums[next] < x)
+                {
+                    _low = current;
+                }
+                else
+                {
+                    return current;
+                }
+            }
+            else
+            {
+                _high = current;
+            }
+        }
+
+        return low;
+    }
+
+    static int findGreater(vector<int> &nums, const int low, const int high, int x)
+    {
+        auto _low = low;
+        auto _high = high;
+        for (auto current = (_low + _high) / 2; _low < current; current = (_low + _high) / 2)
+        {
+            if (x < nums[current])
+            {
+                auto previous = current - 1;
+                if (_low == previous)
+                {
+                    return current;
+                }
+
+                if (x < nums[previous])
+                {
+                    _high = current;
+                }
+                else
+                {
+                    return current;
+                }
+            }
+            else
+            {
+                _low = current;
+            }
+        }
+
+        return high;
     }
 };
