@@ -4,7 +4,6 @@
 #include <cmath>
 
 using std::fill_n;
-using std::min;
 using std::sort;
 using std::swap;
 using std::vector;
@@ -76,21 +75,23 @@ public:
         {
         case 0:
             break;
+        case 1:
+            break;
+        case 2:
+            count = 1;
+            break;
         case 3:
             count = 2;
-            break;
-        default:
-            count = 1;
             break;
         }
 
         sort(distinct, distinct + distinct_size);
 
         auto min_first = -2 * maximum; // 0 - first <= 2 * maximum
-        auto first_index = findGreater(distinct, -1, distinct_size, min_first - 1);
+        auto first_index = findFirstGreaterFromHigh(distinct, -1, distinct_size - 1, min_first - 1);
 
         auto max_first = 0;
-        auto first_limit = findLess(distinct, -1, distinct_size, max_first + 1);
+        auto first_limit = findLastLessFromLow(distinct, 0, distinct_size, max_first + 1);
         for (; first_index <= first_limit; first_index++)
         {
             auto first = distinct[first_index];
@@ -99,10 +100,10 @@ public:
             auto count = counter[first];
             auto second_index_previous = 1 != count ? (first_index - 1) : first_index;
             auto min_second = rest - maximum; //  0 - first - second <= maximum
-            auto second_index = findGreater(distinct, second_index_previous, distinct_size, min_second - 1);
+            auto second_index = findFirstGreaterFromHigh(distinct, second_index_previous, distinct_size - 1, min_second - 1);
 
             auto max_second = rest / 2; //  second <= 0 - first - second
-            auto second_limit = findLess(distinct, second_index_previous, distinct_size, max_second + 1);
+            auto second_limit = findLastLessFromLow(distinct, second_index_previous + 1, distinct_size, max_second + 1);
             for (; second_index <= second_limit; second_index++)
             {
                 auto second = distinct[second_index];
@@ -133,11 +134,12 @@ public:
     }
 
 private:
-    static int findLess(int *arr, const int low, const int high, int x)
+    static int findLastLessFromLow(int *arr, const int low, const int high, int x)
     {
+        auto current = low;
         auto _low = low;
         auto _high = high;
-        for (auto current = (_low + _high) / 2; _low < current; current = (_low + _high) / 2)
+        while (current < _high)
         {
             if (arr[current] < x)
             {
@@ -160,16 +162,19 @@ private:
             {
                 _high = current;
             }
+
+            current = (_low + _high) / 2;
         }
 
-        return low;
+        return low - 1;
     }
 
-    static int findGreater(int *arr, const int low, const int high, int x)
+    static int findFirstGreaterFromHigh(int *arr, const int low, const int high, int x)
     {
+        auto current = high;
         auto _low = low;
         auto _high = high;
-        for (auto current = (_low + _high) / 2; _low < current; current = (_low + _high) / 2)
+        while (_low < current)
         {
             if (x < arr[current])
             {
@@ -192,8 +197,10 @@ private:
             {
                 _low = current;
             }
+
+            current = (_low + _high) / 2;
         }
 
-        return high;
+        return high + 1;
     }
 };

@@ -2,8 +2,6 @@
 #include <algorithm>
 #include <cmath>
 
-using std::floor;
-using std::min;
 using std::sort;
 using std::vector;
 
@@ -16,15 +14,9 @@ public:
 
         sort(nums.begin(), nums.end());
 
-        auto minimun = nums.front();
         auto maximum = nums.back();
 
-        auto result = minimun + nums[1] + nums[2];
-        auto min_first = target / 3;
-        if (min_first <= minimun)
-        {
-            return result;
-        }
+        auto result = nums[0] + nums[1] + nums[2];
 
         auto min_diff = abs(target - result);
         // - min_diff < target - (first + second + third) < min_diff
@@ -39,8 +31,11 @@ public:
         auto third_end = size;
 
         auto last_first = INT_MIN;
-        auto first_index = findGreater(nums, -1, first_end, min_result - 2 * maximum);
-        auto first_limit = findLess(nums, first_index - 1, first_end, min_first + 1);
+        auto first_left = min_result - 2 * maximum;
+        auto first_index = findFirstGreaterFromHigh(nums, -1, first_end - 1, first_left);
+
+        auto first_right = target / 3 + 1;
+        auto first_limit = findLastLessFromLow(nums, 0, first_end, first_right);
         for (; first_index <= first_limit; first_index++)
         {
             auto first = nums[first_index];
@@ -55,8 +50,11 @@ public:
 
             auto rest = target - first;
 
-            auto second_index = findGreater(nums, first_index, second_end, min_result - first - maximum);
-            auto second_limit = findLess(nums, first_index, second_end, (max_result - first + 1) / 2);
+            auto second_left = min_result - first - maximum;
+            auto second_index = findFirstGreaterFromHigh(nums, first_index, second_end - 1, second_left);
+
+            auto second_right = (max_result - first + 1) / 2;
+            auto second_limit = findLastLessFromLow(nums, first_index + 1, second_end, second_right);
             auto last_second = INT_MIN;
             for (; second_index <= second_limit; second_index++)
             {
@@ -72,7 +70,7 @@ public:
 
                 auto expect = rest - second;
 
-                auto third_index = findGreater(nums, second_index, third_end, expect - 1);
+                auto third_index = findFirstGreaterFromHigh(nums, second_index, third_end - 1, expect - 1);
                 auto third_index_2 = third_index - 1;
 
                 auto check = [&](int third)
@@ -85,7 +83,9 @@ public:
 
                         min_result = target - min_diff;
                         max_result = target + min_diff;
-                        second_limit = findLess(nums, second_index, second_limit + 1, (max_result - first + 1) / 2);
+
+                        auto second_right = (max_result - first + 1) / 2;
+                        second_limit = findLastLessFromLow(nums, second_index + 1, second_limit + 1, second_right);
                     }
                 };
 
@@ -105,13 +105,12 @@ public:
     }
 
 private:
-    static int findLess(vector<int> &nums, const int low, const int high, int x)
+    static int findLastLessFromLow(vector<int> &nums, const int low, const int high, int x)
     {
+        auto current = low;
         auto _low = low;
         auto _high = high;
-        for (auto current = (int)floor((_low + _high) / 2.0);
-             _low < current;
-             current = (int)floor((_low + _high) / 2.0))
+        while (current < _high)
         {
             if (nums[current] < x)
             {
@@ -134,16 +133,19 @@ private:
             {
                 _high = current;
             }
+
+            current = (_low + _high) / 2;
         }
 
-        return low;
+        return low - 1;
     }
 
-    static int findGreater(vector<int> &nums, const int low, const int high, int x)
+    static int findFirstGreaterFromHigh(vector<int> &nums, const int low, const int high, int x)
     {
+        auto current = high;
         auto _low = low;
         auto _high = high;
-        for (auto current = (_low + _high) / 2; _low < current; current = (_low + _high) / 2)
+        while (_low < current)
         {
             if (x < nums[current])
             {
@@ -166,8 +168,10 @@ private:
             {
                 _low = current;
             }
+
+            current = (_low + _high) / 2;
         }
 
-        return high;
+        return high + 1;
     }
 };

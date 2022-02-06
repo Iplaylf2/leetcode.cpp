@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cmath>
 
-using std::min;
 using std::sort;
 using std::vector;
 
@@ -32,10 +31,10 @@ public:
         auto second_end = size - 1;
 
         auto min_first = -2 * maximum; // 0 - first <= 2 * maximum
-        auto first_index = findGreater(nums, -1, first_end, min_first - 1);
+        auto first_index = findFirstGreaterFromHigh(nums, -1, first_end - 1, min_first - 1);
 
         auto max_first = 0;
-        auto first_limit = findLess(nums, -1, first_end, max_first + 1);
+        auto first_limit = findLastLessFromLow(nums, 0, first_end, max_first + 1);
 
         auto last_first = INT_MIN;
         for (; first_index <= first_limit; first_index++)
@@ -53,10 +52,10 @@ public:
             auto rest = 0 - first;
 
             auto min_second = rest - maximum; //  0 - first - second <= maximum
-            auto second_index = findGreater(nums, first_index, second_end, min_second - 1);
+            auto second_index = findFirstGreaterFromHigh(nums, first_index, second_end - 1, min_second - 1);
 
             auto max_second = rest / 2; //  second <= 0 - first - second
-            auto second_limit = findLess(nums, first_index, second_end, max_second + 1);
+            auto second_limit = findLastLessFromLow(nums, first_index + 1, second_end, max_second + 1);
 
             auto last_second = INT_MIN;
             for (; second_index <= second_limit; second_index++)
@@ -102,11 +101,12 @@ public:
     }
 
 private:
-    static int findLess(vector<int> &nums, const int low, const int high, int x)
+    static int findLastLessFromLow(vector<int> &nums, const int low, const int high, int x)
     {
+        auto current = low;
         auto _low = low;
         auto _high = high;
-        for (auto current = (_low + _high) / 2; _low < current; current = (_low + _high) / 2)
+        while (current < _high)
         {
             if (nums[current] < x)
             {
@@ -129,16 +129,19 @@ private:
             {
                 _high = current;
             }
+
+            current = (_low + _high) / 2;
         }
 
-        return low;
+        return low - 1;
     }
 
-    static int findGreater(vector<int> &nums, const int low, const int high, int x)
+    static int findFirstGreaterFromHigh(vector<int> &nums, const int low, const int high, int x)
     {
+        auto current = high;
         auto _low = low;
         auto _high = high;
-        for (auto current = (_low + _high) / 2; _low < current; current = (_low + _high) / 2)
+        while (_low < current)
         {
             if (x < nums[current])
             {
@@ -161,8 +164,10 @@ private:
             {
                 _low = current;
             }
+
+            current = (_low + _high) / 2;
         }
 
-        return high;
+        return high + 1;
     }
 };
