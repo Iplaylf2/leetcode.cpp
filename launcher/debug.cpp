@@ -1,11 +1,11 @@
 #include <iostream>
-#include "16-3sum-closest/normal.cpp"
+#include "15-3sum/special.cpp"
 #include "cout-support.cpp"
 
 using std::cout;
 
 int main(int, char **)
 {
-    auto foo = vector<int>({3, 4, 5, 5, 7});
-    cout << Solution().threeSumClosest(foo, 13);
+    auto foo = vector<int>({-2, -3, 0, 0, -2});
+    cout << Solution().threeSum(foo);
 }
