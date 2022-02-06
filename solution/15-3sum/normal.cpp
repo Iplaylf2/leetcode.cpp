@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cmath>
 
-using std::min;
 using std::sort;
 using std::vector;
 
@@ -107,7 +106,7 @@ private:
         auto current = low;
         auto _low = low;
         auto _high = high;
-        do
+        while (current < _high)
         {
             if (nums[current] < x)
             {
@@ -132,7 +131,7 @@ private:
             }
 
             current = (_low + _high) / 2;
-        } while (_low != current);
+        }
 
         return low - 1;
     }
@@ -142,7 +141,7 @@ private:
         auto current = high;
         auto _low = low;
         auto _high = high;
-        do
+        while (_low < current)
         {
             if (x < nums[current])
             {
@@ -167,7 +166,7 @@ private:
             }
 
             current = (_low + _high) / 2;
-        } while (_low != current);
+        }
 
         return high + 1;
     }

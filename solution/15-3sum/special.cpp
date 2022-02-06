@@ -4,7 +4,6 @@
 #include <cmath>
 
 using std::fill_n;
-using std::min;
 using std::sort;
 using std::swap;
 using std::vector;
@@ -79,18 +78,10 @@ public:
         case 1:
             break;
         case 2:
-            if (maximum == 0)
-            {
-                return result;
-            }
             count = 1;
             break;
         case 3:
-            if (maximum == 0)
-            {
-                result.push_back({0, 0, 0});
-                return result;
-            }
+            count = 2;
             break;
         }
 
@@ -148,7 +139,7 @@ private:
         auto current = low;
         auto _low = low;
         auto _high = high;
-        do
+        while (current < _high)
         {
             if (arr[current] < x)
             {
@@ -173,7 +164,7 @@ private:
             }
 
             current = (_low + _high) / 2;
-        } while (_low != current);
+        }
 
         return low - 1;
     }
@@ -183,7 +174,7 @@ private:
         auto current = high;
         auto _low = low;
         auto _high = high;
-        do
+        while (_low < current)
         {
             if (x < arr[current])
             {
@@ -208,7 +199,7 @@ private:
             }
 
             current = (_low + _high) / 2;
-        } while (_low != current);
+        }
 
         return high + 1;
     }

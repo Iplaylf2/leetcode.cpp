@@ -2,8 +2,6 @@
 #include <algorithm>
 #include <cmath>
 
-using std::floor;
-using std::min;
 using std::sort;
 using std::vector;
 
@@ -85,9 +83,9 @@ public:
 
                         min_result = target - min_diff;
                         max_result = target + min_diff;
-                        
+
                         auto second_right = (max_result - first + 1) / 2;
-                        second_limit = findLastLessFromLow(nums, second_index, second_limit + 1, second_right);
+                        second_limit = findLastLessFromLow(nums, second_index + 1, second_limit + 1, second_right);
                     }
                 };
 
@@ -112,7 +110,7 @@ private:
         auto current = low;
         auto _low = low;
         auto _high = high;
-        do
+        while (current < _high)
         {
             if (nums[current] < x)
             {
@@ -137,7 +135,7 @@ private:
             }
 
             current = (_low + _high) / 2;
-        } while (_low != current);
+        }
 
         return low - 1;
     }
@@ -147,7 +145,7 @@ private:
         auto current = high;
         auto _low = low;
         auto _high = high;
-        do
+        while (_low < current)
         {
             if (x < nums[current])
             {
@@ -172,7 +170,7 @@ private:
             }
 
             current = (_low + _high) / 2;
-        } while (_low != current);
+        }
 
         return high + 1;
     }
