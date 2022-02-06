@@ -1,7 +1,5 @@
 #include <string>
-#include <array>
 
-using std::array;
 using std::pair;
 using std::string;
 
@@ -29,7 +27,5 @@ public:
     }
 
 private:
-    static const pair<int, const string> dictionary[13];
+    static constexpr pair<int, const char *> dictionary[13]{{1000, "M"}, {900, "CM"}, {500, "D"}, {400, "CD"}, {100, "C"}, {90, "XC"}, {50, "L"}, {40, "XL"}, {10, "X"}, {9, "IX"}, {5, "V"}, {4, "IV"}, {1, "I"}};
 };
-
-const pair<int, const string> Solution::dictionary[]{{1000, "M"}, {900, "CM"}, {500, "D"}, {400, "CD"}, {100, "C"}, {90, "XC"}, {50, "L"}, {40, "XL"}, {10, "X"}, {9, "IX"}, {5, "V"}, {4, "IV"}, {1, "I"}};
