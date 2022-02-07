@@ -43,7 +43,6 @@ public:
 
         auto &distinct_size = counter_size;
         auto distinct_limit = distinct_size - 1;
-        long minimum = distinct[0];
         long maximum = distinct[distinct_limit];
 
         auto first_left = target - 3 * maximum - 1;
@@ -81,15 +80,16 @@ public:
                 for (; third_index <= third_limit; third_index++)
                 {
                     auto third = distinct[third_index];
-                    auto &third_count = counter[third];
 
                     auto fourth = rest_2 - third;
                     auto fourth_count = counter.find(fourth);
+
                     if (counter_end == fourth_count)
                     {
                         continue;
                     }
 
+                    auto &third_count = counter[third];
                     third_count--;
 
                     if (0 < fourth_count->second)
