@@ -1,11 +1,11 @@
 #include <iostream>
-#include "15-3sum/special.cpp"
+#include "18-4sum/any-sum.cpp"
 #include "cout-support.cpp"
 
 using std::cout;
 
 int main(int, char **)
 {
-    auto foo = vector<int>({-2, -3, 0, 0, -2});
-    cout << Solution().threeSum(foo);
+    auto foo = vector<int>({1, 0, -1, 0, -2, 2});
+    cout << Solution().fourSum(foo, 0);
 }
