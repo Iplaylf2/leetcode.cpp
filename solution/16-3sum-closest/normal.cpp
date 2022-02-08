@@ -1,8 +1,9 @@
 #include <vector>
 #include <algorithm>
+#include <map>
 #include <cmath>
 
-using std::sort;
+using std::map;
 using std::vector;
 
 class Solution
@@ -10,15 +11,34 @@ class Solution
 public:
     int threeSumClosest(vector<int> &nums, int target)
     {
-        auto size = (int)nums.size();
+        auto counter = map<int, int>();
+        for (auto x : nums)
+        {
+            auto count = counter.find(x);
+            if (counter.end() == count)
+            {
+                counter.emplace(x, 1);
+            }
+            else
+            {
+                count->second++;
+            }
+        }
 
-        sort(nums.begin(), nums.end());
+        auto counter_size = counter.size();
+        auto counter_end = counter.end();
 
-        auto maximum = nums.back();
+        auto distinct = new int[counter_size];
+        transform(counter.begin(), counter.end(), distinct, [](auto &x)
+                  { return x.first; });
 
-        auto result = nums[0] + nums[1] + nums[2];
+        auto &distinct_size = counter_size;
+        auto distinct_limit = distinct_size - 1;
+        auto maximum = distinct[distinct_limit];
 
-        auto min_diff = abs(target - result);
+        int result;
+        auto min_diff = 10000;
+
         // - min_diff < target - (first + second + third) < min_diff
         // first <= maximum
         // target - min_diff - 2 * maximum < first
@@ -26,51 +46,33 @@ public:
 
         auto min_result = target - min_diff;
         auto max_result = target + min_diff;
-        auto first_end = size - 2;
-        auto second_end = size - 1;
-        auto third_end = size;
 
-        auto last_first = INT_MIN;
         auto first_left = min_result - 2 * maximum;
-        auto first_index = findFirstGreaterFromHigh(nums, -1, first_end - 1, first_left);
-
-        auto first_right = target / 3 + 1;
-        auto first_limit = findLastLessFromLow(nums, 0, first_end, first_right);
+        auto first_right = ceil((target + min_diff) / 3.0f);
+        auto first_index = findFirstGreaterFromHigh(distinct, -1, distinct_limit, first_left);
+        auto first_limit = findLastLessFromLow(distinct, first_index, distinct_size, first_right);
         for (; first_index <= first_limit; first_index++)
         {
-            auto first = nums[first_index];
-            if (last_first == first)
-            {
-                continue;
-            }
-            else
-            {
-                last_first = first;
-            }
-
+            auto first = distinct[first_index];
             auto rest = target - first;
 
-            auto second_left = min_result - first - maximum;
-            auto second_index = findFirstGreaterFromHigh(nums, first_index, second_end - 1, second_left);
+            auto &first_count = counter[first];
+            auto next_second_index = 1 < first_count ? first_index : first_index + 1;
+            first_count--;
 
-            auto second_right = (max_result - first + 1) / 2;
-            auto second_limit = findLastLessFromLow(nums, first_index + 1, second_end, second_right);
-            auto last_second = INT_MIN;
+            auto second_left = min_result - first - maximum;
+            auto second_right = ceil((max_result - first) / 2.0f);
+            auto second_index = findFirstGreaterFromHigh(distinct, next_second_index - 1, distinct_limit, second_left);
+            auto second_limit = findLastLessFromLow(distinct, second_index, distinct_size, second_right);
             for (; second_index <= second_limit; second_index++)
             {
-                auto second = nums[second_index];
-                if (last_second == second)
-                {
-                    continue;
-                }
-                else
-                {
-                    last_second = second;
-                }
-
+                auto second = distinct[second_index];
                 auto expect = rest - second;
 
-                auto third_index = findFirstGreaterFromHigh(nums, second_index, third_end - 1, expect - 1);
+                auto second_count = counter[second];
+                auto next_third_index = 1 < second_count ? second_index : second_index + 1;
+
+                auto third_index = findFirstGreaterFromHigh(distinct, next_third_index - 1, distinct_limit, expect - 1);
                 auto third_index_2 = third_index - 1;
 
                 auto check = [&](int third)
@@ -84,19 +86,19 @@ public:
                         min_result = target - min_diff;
                         max_result = target + min_diff;
 
-                        auto second_right = (max_result - first + 1) / 2;
-                        second_limit = findLastLessFromLow(nums, second_index + 1, second_limit + 1, second_right);
+                        auto second_right = ceil((max_result - first) / 2.0f);
+                        second_limit = findLastLessFromLow(distinct, second_index + 1, second_limit + 1, second_right);
                     }
                 };
 
-                if (second_index < third_index_2)
+                if (next_third_index <= third_index_2)
                 {
-                    check(nums[third_index_2]);
+                    check(distinct[third_index_2]);
                 }
 
-                if (third_end != third_index)
+                if (third_index <= distinct_limit)
                 {
-                    check(nums[third_index]);
+                    check(distinct[third_index]);
                 }
             }
         }
@@ -105,14 +107,14 @@ public:
     }
 
 private:
-    static int findLastLessFromLow(vector<int> &nums, const int low, const int high, int x)
+    static int findLastLessFromLow(int *arr, const int low, const int high, int x)
     {
         auto current = low;
         auto _low = low;
         auto _high = high;
         while (current < _high)
         {
-            if (nums[current] < x)
+            if (arr[current] < x)
             {
                 auto next = current + 1;
                 if (_high == next)
@@ -120,7 +122,7 @@ private:
                     return current;
                 }
 
-                if (nums[next] < x)
+                if (arr[next] < x)
                 {
                     _low = current;
                 }
@@ -140,14 +142,14 @@ private:
         return low - 1;
     }
 
-    static int findFirstGreaterFromHigh(vector<int> &nums, const int low, const int high, int x)
+    static int findFirstGreaterFromHigh(int *arr, const int low, const int high, int x)
     {
         auto current = high;
         auto _low = low;
         auto _high = high;
         while (_low < current)
         {
-            if (x < nums[current])
+            if (x < arr[current])
             {
                 auto previous = current - 1;
                 if (_low == previous)
@@ -155,7 +157,7 @@ private:
                     return current;
                 }
 
-                if (x < nums[previous])
+                if (x < arr[previous])
                 {
                     _high = current;
                 }
