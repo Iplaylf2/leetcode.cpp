@@ -63,20 +63,22 @@ public:
                     auto last = target - current;
 
                     auto last_count = counter.find(last);
-                    if (counter_end != last_count)
+                    if (counter_end == last_count)
                     {
-                        auto &current_count = counter[current];
-                        current_count--;
-
-                        if (0 < last_count->second)
-                        {
-                            root[i] = current;
-                            root[i + 1] = last;
-                            result.push_back(root);
-                        }
-
-                        current_count++;
+                        continue;
                     }
+
+                    auto &current_count = counter[current];
+                    current_count--;
+
+                    if (0 < last_count->second)
+                    {
+                        root[i] = current;
+                        root[i + 1] = last;
+                        result.push_back(root);
+                    }
+
+                    current_count++;
                 }
             }
             else
