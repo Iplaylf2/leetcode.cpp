@@ -50,35 +50,52 @@ public:
         function<void(int, int, vector<int> &, int, int)> find;
         find = [&](int item, int target, vector<int> &root, int i, int begin)
         {
-            if (1 == item)
-            {
-                auto last_count = counter.find(target);
-                if (counter_end != last_count && 0 < last_count->second)
-                {
-                    root[i] = target;
-                    result.push_back(root);
-                }
-
-                return;
-            }
-
             auto left = target - (item - 1) * maximum - 1;
             auto right = ceil(((float)(target + 1)) / item);
             auto index = FindFirstGreaterFromHigh(distinct, begin - 1, distinct_limit, left);
             auto limit = FindLastLessFromLow(distinct, index, distinct_size, right);
 
-            for (; index <= limit; index++)
+            if (2 == item)
             {
-                auto current = distinct[index];
-                root[i] = current;
+                for (; index <= limit; index++)
+                {
+                    auto current = distinct[index];
+                    auto last = target - current;
 
-                auto &count = counter[current];
-                auto next = 1 < count ? index : index + 1;
-                count--;
+                    auto last_count = counter.find(last);
+                    if (counter_end == last_count)
+                    {
+                        continue;
+                    }
 
-                find(item - 1, target - current, root, i + 1, next);
+                    auto &current_count = counter[current];
+                    current_count--;
 
-                count++;
+                    if (0 < last_count->second)
+                    {
+                        root[i] = current;
+                        root[i + 1] = last;
+                        result.push_back(root);
+                    }
+
+                    current_count++;
+                }
+            }
+            else
+            {
+                for (; index <= limit; index++)
+                {
+                    auto current = distinct[index];
+                    root[i] = current;
+
+                    auto &count = counter[current];
+                    auto next = 1 < count ? index : index + 1;
+                    count--;
+
+                    find(item - 1, target - current, root, i + 1, next);
+
+                    count++;
+                }
             }
         };
 

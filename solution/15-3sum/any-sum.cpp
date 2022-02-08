@@ -4,24 +4,24 @@
 #include <cmath>
 
 using std::ceil;
+using std::function;
 using std::map;
-using std::pair;
 using std::transform;
 using std::vector;
 
-class Solution
+class Byproduct
 {
 public:
-    vector<vector<int>> fourSum(vector<int> &nums, int target)
+    static vector<vector<int>> AnySum(vector<int> &source, int item, int target)
     {
         auto result = vector<vector<int>>();
-        if (nums.size() < 4)
+        if (source.size() < item)
         {
             return result;
         }
 
         auto counter = map<int, int>();
-        for (auto x : nums)
+        for (auto x : source)
         {
             auto count = counter.find(x);
             if (counter.end() == count)
@@ -45,70 +45,68 @@ public:
         auto distinct_limit = distinct_size - 1;
         long maximum = distinct[distinct_limit];
 
-        auto first_left = target - 3 * maximum - 1;
-        auto first_right = ceil((target + 1) / 4.0f);
-        auto first_index = findFirstGreaterFromHigh(distinct, -1, distinct_limit, first_left);
-        auto first_limit = findLastLessFromLow(distinct, first_index, distinct_size, first_right);
-        for (; first_index <= first_limit; first_index++)
+        auto item_limit = item - 1;
+
+        function<void(int, int, vector<int> &, int, int)> find;
+        find = [&](int item, int target, vector<int> &root, int i, int begin)
         {
-            auto first = distinct[first_index];
-            auto &first_count = counter[first];
+            auto left = target - (item - 1) * maximum - 1;
+            auto right = ceil(((float)(target + 1)) / item);
+            auto index = FindFirstGreaterFromHigh(distinct, begin - 1, distinct_limit, left);
+            auto limit = FindLastLessFromLow(distinct, index, distinct_size, right);
 
-            auto rest_3 = target - first;
-
-            auto second_begin = 1 < first_count ? first_index : first_index + 1;
-            first_count--;
-
-            auto second_left = rest_3 - 2 * maximum - 1;
-            auto second_right = ceil((rest_3 + 1) / 3.0f);
-            auto second_index = findFirstGreaterFromHigh(distinct, second_begin - 1, distinct_limit, second_left);
-            auto second_limit = findLastLessFromLow(distinct, second_index, distinct_size, second_right);
-            for (; second_index <= second_limit; second_index++)
+            if (2 == item)
             {
-                auto second = distinct[second_index];
-                auto &second_count = counter[second];
-
-                auto rest_2 = rest_3 - second;
-
-                auto third_begin = 1 < second_count ? second_index : second_index + 1;
-                second_count--;
-
-                auto third_left = rest_2 - maximum - 1;
-                auto third_right = ceil((rest_2 + 1) / 2.0f);
-                auto third_index = findFirstGreaterFromHigh(distinct, third_begin - 1, distinct_limit, third_left);
-                auto third_limit = findLastLessFromLow(distinct, third_index, distinct_size, third_right);
-                for (; third_index <= third_limit; third_index++)
+                for (; index <= limit; index++)
                 {
-                    auto third = distinct[third_index];
+                    auto current = distinct[index];
+                    auto last = target - current;
 
-                    auto fourth = rest_2 - third;
-                    auto fourth_count = counter.find(fourth);
-
-                    if (counter_end == fourth_count)
+                    auto last_count = counter.find(last);
+                    if (counter_end == last_count)
                     {
                         continue;
                     }
 
-                    auto &third_count = counter[third];
-                    third_count--;
+                    auto &current_count = counter[current];
+                    current_count--;
 
-                    if (0 < fourth_count->second)
+                    if (0 < last_count->second)
                     {
-                        result.push_back({first, second, third, fourth});
+                        root[i] = current;
+                        root[i + 1] = last;
+                        result.push_back(root);
                     }
 
-                    third_count++;
+                    current_count++;
                 }
-
-                second_count++;
             }
-        }
+            else
+            {
+                for (; index <= limit; index++)
+                {
+                    auto current = distinct[index];
+                    root[i] = current;
+
+                    auto &count = counter[current];
+                    auto next = 1 < count ? index : index + 1;
+                    count--;
+
+                    find(item - 1, target - current, root, i + 1, next);
+
+                    count++;
+                }
+            }
+        };
+
+        auto root = vector<int>(item);
+        find(item, target, root, 0, 0);
 
         return result;
     }
 
 private:
-    static int findLastLessFromLow(int *arr, const int low, const int high, long x)
+    static int FindLastLessFromLow(int *arr, const int low, const int high, long x)
     {
         auto current = low;
         auto _low = low;
@@ -143,7 +141,7 @@ private:
         return low - 1;
     }
 
-    static int findFirstGreaterFromHigh(int *arr, const int low, const int high, long x)
+    static int FindFirstGreaterFromHigh(int *arr, const int low, const int high, long x)
     {
         auto current = high;
         auto _low = low;
@@ -176,5 +174,14 @@ private:
         }
 
         return high + 1;
+    }
+};
+
+class Solution
+{
+public:
+    vector<vector<int>> threeSum(vector<int> &nums)
+    {
+        return Byproduct::AnySum(nums, 3, 0);
     }
 };
