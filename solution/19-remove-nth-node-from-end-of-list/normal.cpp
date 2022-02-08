@@ -16,7 +16,7 @@ public:
     ListNode *removeNthFromEnd(ListNode *head, int n)
     {
         auto fast = head;
-        for (auto i = 0; i != n; i++)
+        for (; 0 != n; n--)
         {
             fast = fast->next;
         }
