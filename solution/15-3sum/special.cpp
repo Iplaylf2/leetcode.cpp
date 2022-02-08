@@ -76,8 +76,8 @@ public:
 
         auto first_left = -2 * maximum - 1;
         auto first_right = 1;
-        auto first_index = FindFirstGreaterFromHigh(distinct, -1, distinct_limit, first_left);
-        auto first_limit = FindLastLessFromLow(distinct, first_index, distinct_size, first_right);
+        auto first_index = findFirstGreaterFromHigh(distinct, -1, distinct_limit, first_left);
+        auto first_limit = findLastLessFromLow(distinct, first_index, distinct_size, first_right);
         for (; first_index <= first_limit; first_index++)
         {
             auto first = distinct[first_index];
@@ -89,8 +89,8 @@ public:
 
             auto second_left = rest - maximum - 1;
             auto second_right = ceil(((float)(rest + 1)) / 2);
-            auto second_index = FindFirstGreaterFromHigh(distinct, next_second_index - 1, distinct_limit, second_left);
-            auto second_limit = FindLastLessFromLow(distinct, second_index, distinct_size, second_right);
+            auto second_index = findFirstGreaterFromHigh(distinct, next_second_index - 1, distinct_limit, second_left);
+            auto second_limit = findLastLessFromLow(distinct, second_index, distinct_size, second_right);
             for (; second_index <= second_limit; second_index++)
             {
                 auto second = distinct[second_index];
@@ -119,7 +119,7 @@ public:
     }
 
 private:
-    static int FindLastLessFromLow(int *arr, const int low, const int high, int x)
+    static int findLastLessFromLow(int *arr, const int low, const int high, int x)
     {
         auto current = low;
         auto _low = low;
@@ -154,7 +154,7 @@ private:
         return low - 1;
     }
 
-    static int FindFirstGreaterFromHigh(int *arr, const int low, const int high, int x)
+    static int findFirstGreaterFromHigh(int *arr, const int low, const int high, int x)
     {
         auto current = high;
         auto _low = low;
