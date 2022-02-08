@@ -70,59 +70,44 @@ public:
             }
         }
 
-        auto &count = counter[0];
-        switch (count)
-        {
-        case 0:
-            break;
-        case 1:
-            break;
-        case 2:
-            count = 1;
-            break;
-        case 3:
-            count = 2;
-            break;
-        }
-
         sort(distinct, distinct + distinct_size);
 
-        auto min_first = -2 * maximum; // 0 - first <= 2 * maximum
-        auto first_index = findFirstGreaterFromHigh(distinct, -1, distinct_size - 1, min_first - 1);
+        auto distinct_limit = distinct_size - 1;
 
-        auto max_first = 0;
-        auto first_limit = findLastLessFromLow(distinct, 0, distinct_size, max_first + 1);
+        auto first_left = -2 * maximum - 1;
+        auto first_right = 1;
+        auto first_index = FindFirstGreaterFromHigh(distinct, -1, distinct_limit, first_left);
+        auto first_limit = FindLastLessFromLow(distinct, first_index, distinct_size, first_right);
         for (; first_index <= first_limit; first_index++)
         {
             auto first = distinct[first_index];
             auto rest = 0 - first;
 
-            auto count = counter[first];
-            auto second_index_previous = 1 != count ? (first_index - 1) : first_index;
-            auto min_second = rest - maximum; //  0 - first - second <= maximum
-            auto second_index = findFirstGreaterFromHigh(distinct, second_index_previous, distinct_size - 1, min_second - 1);
+            auto &first_count = counter[first];
+            auto next_second_index = 1 < first_count ? first_index : first_index + 1;
+            first_count--;
 
-            auto max_second = rest / 2; //  second <= 0 - first - second
-            auto second_limit = findLastLessFromLow(distinct, second_index_previous + 1, distinct_size, max_second + 1);
+            auto second_left = rest - maximum - 1;
+            auto second_right = ceil(((float)(rest + 1)) / 2);
+            auto second_index = FindFirstGreaterFromHigh(distinct, next_second_index - 1, distinct_limit, second_left);
+            auto second_limit = FindLastLessFromLow(distinct, second_index, distinct_size, second_right);
             for (; second_index <= second_limit; second_index++)
             {
                 auto second = distinct[second_index];
+                auto &second_count = counter[second];
+                second_count--;
+
                 auto third = rest - second;
-                auto count = counter[third];
-                if (third == second)
+                auto third_count = counter[third];
+                if (0 == third_count)
                 {
-                    if (1 != count)
-                    {
-                        result.push_back({first, second, third});
-                    }
+                    second_count++;
+                    continue;
                 }
-                else
-                {
-                    if (0 != count)
-                    {
-                        result.push_back({first, second, third});
-                    }
-                }
+
+                result.push_back({first, second, third});
+
+                second_count++;
             }
         }
 
@@ -134,7 +119,7 @@ public:
     }
 
 private:
-    static int findLastLessFromLow(int *arr, const int low, const int high, int x)
+    static int FindLastLessFromLow(int *arr, const int low, const int high, int x)
     {
         auto current = low;
         auto _low = low;
@@ -169,7 +154,7 @@ private:
         return low - 1;
     }
 
-    static int findFirstGreaterFromHigh(int *arr, const int low, const int high, int x)
+    static int FindFirstGreaterFromHigh(int *arr, const int low, const int high, int x)
     {
         auto current = high;
         auto _low = low;
