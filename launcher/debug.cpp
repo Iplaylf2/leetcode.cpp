@@ -1,10 +1,11 @@
 #include <iostream>
-#include "22-generate-parentheses/normal.cpp"
+#include "23-merge-k-sorted-lists/normal.cpp"
 #include "cout-support.cpp"
 
 using std::cout;
 
 int main(int, char **)
 {
-    Solution().generateParenthesis(3);
+    auto foo = vector<ListNode *>{nullptr, nullptr, nullptr};
+    Solution().mergeKLists(foo);
 }
