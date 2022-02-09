@@ -59,7 +59,7 @@ public:
 
             auto &to_move = lists[index];
             current->next = to_move;
-            current = current->next;
+            current = to_move;
 
             to_move = to_move->next;
             if (nullptr == to_move)
