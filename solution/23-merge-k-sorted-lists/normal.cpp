@@ -21,13 +21,7 @@ class Solution
 public:
     ListNode *mergeKLists(vector<ListNode *> &lists)
     {
-        auto size = lists.size();
-        if (0 == size)
-        {
-            return nullptr;
-        }
-
-        int last = size - 1;
+        auto last = ((int)lists.size()) - 1;
         for (auto i = last; 0 <= i; i--)
         {
             auto current = lists[i];
@@ -38,10 +32,20 @@ public:
             }
         }
 
+        switch (last + 1)
+        {
+        case 0:
+            return nullptr;
+        case 1:
+            return lists[0];
+        default:
+            break;
+        }
+
         auto dummy = ListNode();
         auto current = &dummy;
 
-        while (0 < last)
+        do
         {
             int minimum = lists[0]->val;
             int index = 0;
@@ -67,7 +71,7 @@ public:
                 swap(to_move, lists[last]);
                 last--;
             }
-        }
+        } while (0 < last);
         current->next = lists[0];
 
         return dummy.next;
