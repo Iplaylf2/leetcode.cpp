@@ -11,19 +11,16 @@ public:
         auto distinct = 0;
 
         auto last = INT_MIN;
-        for (auto tail = 0, end = (int)nums.size();
-             end != tail;
-             tail++)
+        for (auto x : nums)
         {
-            auto current = nums[tail];
-            if (last != current)
+            if (last != x)
             {
-                nums[distinct] = current;
+                nums[distinct] = x;
                 distinct++;
-                last = current;
+                last = x;
             }
         }
-        
+
         return distinct;
     }
 };
