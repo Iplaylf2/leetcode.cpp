@@ -1,3 +1,5 @@
+#ifndef PARSER_H
+#define PARSER_H
 struct ListNode
 {
     int val;
@@ -6,3 +8,4 @@ struct ListNode
     ListNode(int x) : val(x), next(nullptr) {}
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
+#endif
