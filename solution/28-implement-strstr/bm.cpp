@@ -3,7 +3,6 @@
 #include <cmath>
 
 using std::array;
-using std::fill_n;
 using std::max;
 using std::string;
 
@@ -89,6 +88,7 @@ private:
             }
         }
     finish_good_suffix:
+
         for (auto i = 0, offset = good_suffix[min_j]; min_j != i; i++)
         {
             good_suffix[i] = offset;
@@ -98,9 +98,8 @@ private:
         auto result = -1;
         for (auto i = last; i < source_size;)
         {
-            auto j = last;
             auto k = 0;
-            while (source[i - k] == target[j - k])
+            while (source[i - k] == target[last - k])
             {
                 if (last == k)
                 {
@@ -111,7 +110,7 @@ private:
                 k++;
             }
 
-            auto offset = max(bad_char[source[i - k]] - k, good_suffix[j - k]);
+            auto offset = max(bad_char[source[i - k]] - k, good_suffix[last - k]);
             i += offset;
         }
     end:
