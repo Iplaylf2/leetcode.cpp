@@ -38,7 +38,9 @@ private:
 
         auto suffix_index = 1;
         auto prefix_index = 0;
-        while (target_size - 1 != suffix_index)
+
+        auto target_last = target_size - 1;
+        while (target_last != suffix_index)
         {
             if (target[suffix_index] == target[prefix_index])
             {
@@ -69,13 +71,13 @@ private:
         {
             if (source[i] == target[j])
             {
-                i++;
-                j++;
-                if (target_size == j)
+                if (target_last == j)
                 {
                     result = i - j;
                     break;
                 }
+                i++;
+                j++;
             }
             else
             {

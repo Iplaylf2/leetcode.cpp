@@ -1,7 +1,7 @@
 #include <iostream>
-#include "28-implement-strstr/bm.cpp"
+#include "28-implement-strstr/sunday.cpp"
 
 int main(int, char **)
 {
-    Solution().strStr("abcdxxxbcdxxcdxabcdabcdxxxbcdxxcdxabcd", "abcdxxxbcdxxcdxabcd");
+    Solution().strStr("hello", "ll");
 }
