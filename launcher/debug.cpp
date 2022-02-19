@@ -1,7 +1,7 @@
 #include <iostream>
-#include "28-implement-strstr/kmp.cpp"
+#include "28-implement-strstr/bm.cpp"
 
 int main(int, char **)
 {
-    Solution().strStr("hello", "abababca");
+    Solution().strStr("abcdxxxbcdxxcdxabcdabcdxxxbcdxxcdxabcd", "abcdxxxbcdxxcdxabcd");
 }

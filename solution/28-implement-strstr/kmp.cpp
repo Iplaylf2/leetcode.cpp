@@ -1,7 +1,5 @@
 #include <string>
-#include <array>
 
-using std::fill_n;
 using std::string;
 
 class Solution
