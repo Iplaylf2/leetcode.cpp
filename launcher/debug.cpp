@@ -1,7 +1,7 @@
 #include <iostream>
-#include "28-implement-strstr/sunday.cpp"
+#include "29-divide-two-integers/normal.cpp"
 
 int main(int, char **)
 {
-    Solution().strStr("hello", "ll");
+    Solution().divide(-2147483648,-1);
 }
