@@ -1,6 +1,6 @@
 #include <vector>
 #include <algorithm>
-#include <cmath>
+#include <climits>
 
 #include "leetcode.cpp"
 

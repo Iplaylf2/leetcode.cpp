@@ -1,5 +1,5 @@
 #include <string>
-#include <cmath>
+#include <climits>
 
 using std::string;
 
