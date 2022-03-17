@@ -1,5 +1,5 @@
 #include <vector>
-#include <cmath>
+#include <climits>
 
 using std::max;
 using std::min;
