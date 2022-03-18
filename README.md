@@ -1,1 +1,1 @@
-VSCode -> `Ctrl-SHIF-P ` -> "CMAKE RUN"
+You can build/debug it in a Docker container by VSCode.
