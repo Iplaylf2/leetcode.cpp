@@ -9,8 +9,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
 RUN sed -i 's|security.debian.org/debian-security|mirrors.ustc.edu.cn/debian-security|g' /etc/apt/sources.list; \
-    sed -i 's|deb.debian.org/debian|mirrors.ustc.edu.cn/debian|g' /etc/apt/sources.list; \
-    git config --global core.autocrlf true
+    sed -i 's|deb.debian.org/debian|mirrors.ustc.edu.cn/debian|g' /etc/apt/sources.list
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive; \
     apt-get -y install --no-install-recommends g++ gdb cmake make
