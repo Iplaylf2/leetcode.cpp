@@ -1,7 +1,8 @@
 #include <iostream>
-#include "29-divide-two-integers/normal.cpp"
+#include "30-substring-with-concatenation-of-all-words/normal.cpp"
 
 int main(int, char **)
 {
-    Solution().divide(-2147483648,-1);
+    auto foo = vector<string>{"foo", "bar"};
+    Solution().findSubstring("barfoothefoobarman", foo);
 }
