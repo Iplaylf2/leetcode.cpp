@@ -37,113 +37,145 @@ public:
         int view_length = words_size * word_length;
         int s_length = s.length();
 
-        auto fixed_word_map = unordered_map<string, int>();
+        auto word_map = unordered_map<string, ViewWord>();
         for (int i = 0; words_size != i; i++)
         {
             auto &x = words[i];
-            auto node = fixed_word_map.try_emplace(x, 1);
+            auto node = word_map.try_emplace(x, ViewWord());
             if (!node.second)
             {
-                node.first->second++;
+                node.first->second.total++;
             }
         }
+        auto word_map_end = word_map.end();
+        auto reset_word_map = [&word_map]()
+        {
+            for (auto &[_, x] : word_map)
+            {
+                x.count = 0;
+            }
+        };
 
         for (int group_index = 0; group_index < word_length; group_index++)
         {
-            auto word_map = fixed_word_map;
-            auto word_map_end = word_map.end();
-
-            auto pass_view = queue<int *>();
-            auto pop_pass_view_until_a_spot = [&pass_view](int &x)
-            {
-                auto n = 0;
-                do
-                {
-                    auto count = pass_view.front();
-                    (*count)++;
-                    pass_view.pop();
-
-                    n++;
-                } while (0 == x);
-
-                return n;
-            };
-
-            auto pop_pass_view = [&pass_view]()
-            {
-                auto count = pass_view.front();
-                (*count)++;
-                pass_view.pop();
-            };
-
-            int view_left = group_index;
-            if (s_length < view_left + view_length)
+            int view_begin = group_index;
+            if (s_length < view_begin + view_length)
             {
                 break;
             }
 
-            auto view_word_index = 0;
-            auto view_word_cursor = view_left;
+            auto view_word_cursor = view_begin;
+
+            auto pass_count = 0;
+            auto pass_queue = queue<int *>();
+
+            auto pop_pass_queue_until_same = [&pass_queue](int *x)
+            {
+                auto n = 0;
+                while (true)
+                {
+                    n++;
+
+                    auto front = pass_queue.front();
+                    (*front)--;
+
+                    pass_queue.pop();
+
+                    if (x == front)
+                    {
+                        break;
+                    }
+                }
+
+                return n;
+            };
+
+            auto pop_pass_queue = [&pass_queue]()
+            {
+                auto front = pass_queue.front();
+                (*front)--;
+
+                pass_queue.pop();
+            };
+
             while (true)
             {
                 auto word = s.substr(view_word_cursor, word_length);
                 auto find_result = word_map.find(word);
                 if (word_map_end == find_result)
                 {
-                    auto offset = view_word_index + 1;
-                    auto offset_size = word_length * offset;
-                    view_left += offset_size;
-                    if (s_length < view_left + view_length)
+                    view_word_cursor += word_length;
+                    view_begin = view_word_cursor;
+                    if (s_length < view_begin + view_length)
                     {
                         break;
                     }
 
-                    view_word_index = 0;
-                    view_word_cursor += word_length;
+                    reset_word_map();
+                    pass_queue = {};
 
-                    pass_view = {};
-                    word_map = fixed_word_map;
-                    word_map_end = word_map.end();
+                    pass_count = 0;
                 }
                 else
                 {
-                    auto &word_count = find_result->second;
-                    if (0 == word_count)
+                    auto &view_word = find_result->second;
+                    view_word.count++;
+
+                    if (view_word.count < view_word.total)
                     {
-                        auto offset = pop_pass_view_until_a_spot(word_count);
-                        auto offset_size = word_length * offset;
-                        view_left += offset_size;
-                        if (s_length < view_left + view_length)
+                        pass_count++;
+                        pass_queue.push(&view_word.count);
+                        view_word_cursor += word_length;
+                    }
+                    else if (view_word.total == view_word.count)
+                    {
+                        pass_count++;
+                        if (words_size == pass_count)
+                        {
+                            result.push_back(view_begin);
+
+                            view_begin += word_length;
+                            if (s_length < view_begin + view_length)
+                            {
+                                break;
+                            }
+
+                            pass_count--;
+                            pop_pass_queue();
+                        }
+                        view_word_cursor += word_length;
+
+                        pass_queue.push(&view_word.count);
+                    }
+                    else if (view_word.total < view_word.count)
+                    {
+                        auto n = pop_pass_queue_until_same(&view_word.count);
+
+                        view_begin += word_length * n;
+                        if (s_length < view_begin + view_length)
                         {
                             break;
                         }
+                        view_word_cursor += word_length;
 
-                        view_word_index -= offset;
+                        pass_count -= n - 1;
+                        pass_queue.push(&view_word.count);
                     }
-                    else if (words_size - 1 == view_word_index)
-                    {
-                        result.push_back(view_left);
-
-                        view_left += word_length;
-                        if (s_length < view_left + view_length)
-                        {
-                            break;
-                        }
-
-                        view_word_index--;
-
-                        pop_pass_view();
-                    }
-
-                    word_count--;
-                    pass_view.push(&word_count);
-
-                    view_word_index++;
-                    view_word_cursor += word_length;
                 }
             }
+
+            reset_word_map();
         }
 
         return result;
     }
+
+private:
+    struct ViewWord
+    {
+    public:
+        ViewWord() : total{1}, count{0} {}
+        int total;
+        int count;
+    };
 };
