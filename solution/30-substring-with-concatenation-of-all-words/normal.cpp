@@ -1,10 +1,9 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include <list>
+#include <queue>
 
-using std::copy;
-using std::list;
+using std::queue;
 using std::string;
 using std::unordered_map;
 using std::vector;
@@ -38,52 +37,47 @@ public:
         int view_length = words_size * word_length;
         int s_length = s.length();
 
-        auto fixed_word_map = unordered_map<string, ViewWord>();
+        auto fixed_word_map = unordered_map<string, int>();
         for (int i = 0; words_size != i; i++)
         {
             auto &x = words[i];
-            auto node = fixed_word_map.try_emplace(x, ViewWord());
+            auto node = fixed_word_map.try_emplace(x, 1);
             if (!node.second)
             {
-                node.first->second.count++;
+                node.first->second++;
             }
         }
 
-        for (int view_begin = 0; view_begin < word_length; view_begin++)
+        for (int group_index = 0; group_index < word_length; group_index++)
         {
             auto word_map = fixed_word_map;
             auto word_map_end = word_map.end();
 
-            auto pass_view = list<ViewWord *>();
-            auto pop_and_refresh = [&pass_view](int n)
+            auto pass_view = queue<int *>();
+            auto pop_pass_view_until_a_spot = [&pass_view](int &x)
             {
-                for (int i = 0; n != i; i++)
+                auto n = 0;
+                do
                 {
-                    auto front = pass_view.front();
-                    front->count++;
-                    pass_view.pop_front();
-                }
+                    auto count = pass_view.front();
+                    (*count)++;
+                    pass_view.pop();
 
-                for (auto x : pass_view)
-                {
-                    x->begin_not_set = true;
-                }
+                    n++;
+                } while (0 == x);
 
-                auto i = 0;
-                for (auto x : pass_view)
-                {
-                    if (x->begin_not_set)
-                    {
-                        x->begin = i;
-                        x->begin_not_set = false;
-                    }
-                    i++;
-                }
+                return n;
             };
 
-            int view_left = view_begin;
-            int view_right = view_begin + view_length - 1;
-            if (s_length <= view_right)
+            auto pop_pass_view = [&pass_view]()
+            {
+                auto count = pass_view.front();
+                (*count)++;
+                pass_view.pop();
+            };
+
+            int view_left = group_index;
+            if (s_length < view_left + view_length)
             {
                 break;
             }
@@ -99,8 +93,7 @@ public:
                     auto offset = view_word_index + 1;
                     auto offset_size = word_length * offset;
                     view_left += offset_size;
-                    view_right += offset_size;
-                    if (s_length <= view_right)
+                    if (s_length < view_left + view_length)
                     {
                         break;
                     }
@@ -108,69 +101,49 @@ public:
                     view_word_index = 0;
                     view_word_cursor += word_length;
 
-                    pass_view.clear();
+                    pass_view = {};
                     word_map = fixed_word_map;
                     word_map_end = word_map.end();
                 }
                 else
                 {
-                    auto &view_word = find_result->second;
-                    if (0 == view_word.count)
+                    auto &word_count = find_result->second;
+                    if (0 == word_count)
                     {
-                        auto offset = view_word.begin + 1;
+                        auto offset = pop_pass_view_until_a_spot(word_count);
                         auto offset_size = word_length * offset;
                         view_left += offset_size;
-                        view_right += offset_size;
-                        if (s_length <= view_right)
+                        if (s_length < view_left + view_length)
                         {
                             break;
                         }
 
                         view_word_index -= offset;
-
-                        pop_and_refresh(offset);
                     }
                     else if (words_size - 1 == view_word_index)
                     {
                         result.push_back(view_left);
 
                         view_left += word_length;
-                        view_right += word_length;
-                        if (s_length <= view_right)
+                        if (s_length < view_left + view_length)
                         {
                             break;
                         }
 
                         view_word_index--;
 
-                        pop_and_refresh(1);
+                        pop_pass_view();
                     }
 
-                    if (view_word.begin_not_set)
-                    {
-                        view_word.begin = view_word_index;
-                        view_word.begin_not_set = false;
-                    }
-                    view_word.count--;
+                    word_count--;
+                    pass_view.push(&word_count);
 
                     view_word_index++;
                     view_word_cursor += word_length;
-
-                    pass_view.push_back(&view_word);
                 }
             }
         }
 
         return result;
     }
-
-private:
-    struct ViewWord
-    {
-    public:
-        ViewWord() : count{1}, begin_not_set(true) {}
-        int count;
-        bool begin_not_set;
-        int begin;
-    };
 };

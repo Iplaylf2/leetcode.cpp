@@ -3,6 +3,6 @@
 
 int main(int, char **)
 {
-    auto foo = vector<string>{"is"};
-    Solution().findSubstring("mississippi", foo);
+    auto foo = vector<string>{"aa","aa"};
+    Solution().findSubstring("aaaaaaaaaaaaaa", foo);
 }
