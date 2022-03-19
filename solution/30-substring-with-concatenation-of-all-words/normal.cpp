@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <list>
 
+using std::copy;
 using std::list;
 using std::string;
 using std::unordered_map;
@@ -13,12 +14,29 @@ class Solution
 public:
     vector<int> findSubstring(string s, vector<string> &words)
     {
+        auto result = vector<int>();
+
         int words_size = words.size();
+        if (1 == words_size)
+        {
+            auto word = words.front();
+            auto current = 0;
+            while (true)
+            {
+                int position = s.find(word, current);
+                if (position < 0)
+                {
+                    return result;
+                }
+
+                result.push_back(position);
+                current = position + 1;
+            }
+        }
+
         int word_length = words.front().length();
         int view_length = words_size * word_length;
         int s_length = s.length();
-
-        auto result = vector<int>();
 
         auto fixed_word_map = unordered_map<string, ViewWord>();
         for (int i = 0; words_size != i; i++)
@@ -31,35 +49,37 @@ public:
             }
         }
 
-        auto pass_view = list<ViewWord *>();
-        auto pop_and_refresh = [&pass_view](int n)
-        {
-            for (int i = 0; n != i; i++)
-            {
-                auto front = pass_view.front();
-                front->count++;
-                pass_view.pop_back();
-            }
-
-            for (auto x : pass_view)
-            {
-                x->begin_not_set = true;
-            }
-
-            for (auto x : pass_view)
-            {
-                if (x->begin_not_set)
-                {
-                    x->begin -= n;
-                    x->begin_not_set = false;
-                }
-            }
-        };
-
         for (int view_begin = 0; view_begin < word_length; view_begin++)
         {
             auto word_map = fixed_word_map;
             auto word_map_end = word_map.end();
+
+            auto pass_view = list<ViewWord *>();
+            auto pop_and_refresh = [&pass_view](int n)
+            {
+                for (int i = 0; n != i; i++)
+                {
+                    auto front = pass_view.front();
+                    front->count++;
+                    pass_view.pop_front();
+                }
+
+                for (auto x : pass_view)
+                {
+                    x->begin_not_set = true;
+                }
+
+                auto i = 0;
+                for (auto x : pass_view)
+                {
+                    if (x->begin_not_set)
+                    {
+                        x->begin = i;
+                        x->begin_not_set = false;
+                    }
+                    i++;
+                }
+            };
 
             int view_left = view_begin;
             int view_right = view_begin + view_length - 1;
@@ -110,23 +130,20 @@ public:
 
                         pop_and_refresh(offset);
                     }
-                    else
+                    else if (words_size - 1 == view_word_index)
                     {
-                        if (words_size - 1 == view_word_index)
+                        result.push_back(view_left);
+
+                        view_left += word_length;
+                        view_right += word_length;
+                        if (s_length <= view_right)
                         {
-                            result.push_back(view_left);
-
-                            view_left += word_length;
-                            view_right += word_length;
-                            if (s_length <= view_right)
-                            {
-                                break;
-                            }
-
-                            view_word_index--;
-
-                            pop_and_refresh(1);
+                            break;
                         }
+
+                        view_word_index--;
+
+                        pop_and_refresh(1);
                     }
 
                     if (view_word.begin_not_set)
