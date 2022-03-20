@@ -35,7 +35,7 @@ public:
 
         int word_length = words.front().length();
         int view_length = words_size * word_length;
-        int s_length = s.length();
+        int max_view_begin = s.length() - view_length;
 
         auto word_map = unordered_map<string, ViewWord>();
         for (int i = 0; words_size != i; i++)
@@ -57,44 +57,14 @@ public:
             }
 
             int view_begin = group_index;
-            if (s_length < view_begin + view_length)
+            if (max_view_begin < view_begin)
             {
                 break;
             }
 
             auto view_word_cursor = view_begin;
 
-            auto pass_count = 0;
-            auto pass_queue = queue<int *>();
-
-            auto pop_pass_queue_until_same = [&pass_queue](int *x)
-            {
-                auto n = 0;
-                while (true)
-                {
-                    n++;
-
-                    auto front = pass_queue.front();
-                    (*front)--;
-
-                    pass_queue.pop();
-
-                    if (x == front)
-                    {
-                        break;
-                    }
-                }
-
-                return n;
-            };
-
-            auto pop_pass_queue = [&pass_queue]()
-            {
-                auto front = pass_queue.front();
-                (*front)--;
-
-                pass_queue.pop();
-            };
+            auto subView = SubView();
 
             while (true)
             {
@@ -105,50 +75,42 @@ public:
                 if (word_map_end == find_result)
                 {
                     view_begin = view_word_cursor;
-                    if (s_length < view_begin + view_length)
+                    if (max_view_begin < view_begin)
                     {
                         break;
                     }
 
-                    pass_count = 0;
-                    while (!pass_queue.empty())
-                    {
-                        auto front = pass_queue.front();
-                        *front = 0;
-                        pass_queue.pop();
-                    }
+                    subView.PopAll();
                 }
                 else
                 {
                     auto &view_word = find_result->second;
-                    view_word.count++;
-
-                    pass_count++;
-                    pass_queue.push(&view_word.count);
+                    subView.Push(&view_word.count);
 
                     if (view_word.total == view_word.count)
                     {
-                        if (words_size == pass_count)
+                        if (words_size == subView.Length())
                         {
                             result.push_back(view_begin);
 
                             view_begin += word_length;
-                            if (s_length < view_begin + view_length)
+                            if (max_view_begin < view_begin)
                             {
                                 break;
                             }
 
-                            pop_pass_queue();
-                            pass_count--;
+                            subView.Pop();
                         }
                     }
                     else if (view_word.total < view_word.count)
                     {
-                        auto n = pop_pass_queue_until_same(&view_word.count);
-                        pass_count -= n;
+                        auto old_length = subView.Length();
 
-                        view_begin += word_length * n;
-                        if (s_length < view_begin + view_length)
+                        subView.PopUntilSame(&view_word.count);
+
+                        auto offset = old_length - subView.Length();
+                        view_begin += word_length * offset;
+                        if (max_view_begin < view_begin)
                         {
                             break;
                         }
@@ -167,5 +129,55 @@ private:
         ViewWord() : total{1} {}
         int total;
         int count;
+    };
+
+    class SubView
+    {
+    public:
+        SubView() : CountQueue{}, _Length{0} {}
+
+        int Length()
+        {
+            return this->_Length;
+        }
+
+        void Push(int *x)
+        {
+            this->CountQueue.push(x);
+            this->_Length++;
+            (*x)++;
+        }
+
+        void Pop()
+        {
+            auto x = this->CountQueue.front();
+            this->CountQueue.pop();
+            this->_Length--;
+            (*x)--;
+        }
+
+        void PopUntilSame(int *x)
+        {
+            int *front;
+            do
+            {
+                front = this->CountQueue.front();
+                this->CountQueue.pop();
+                this->_Length--;
+                (*front)--;
+            } while (x != front);
+        }
+
+        void PopAll()
+        {
+            while (0 != this->_Length)
+            {
+                Pop();
+            }
+        }
+
+    private:
+        queue<int *> CountQueue;
+        int _Length;
     };
 };
