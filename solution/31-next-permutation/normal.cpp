@@ -12,8 +12,7 @@ public:
     {
         auto down_begin = 0;
         auto last = nums[0];
-        int end = end = (int)nums.size();
-        for (int i = 1; end != i; i++)
+        for (int i = 1, end = (int)nums.size(); end != i; i++)
         {
             auto current = nums[i];
             if (last < current)
