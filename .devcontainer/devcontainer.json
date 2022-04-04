@@ -22,5 +22,5 @@
   "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
   // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "vscode",
-  "postCreateCommand": "git config --global core.autocrlf true && git config --global --unset http.proxy && git config --global --unset https.proxy"
+  "postCreateCommand": "git config --global core.autocrlf input && git config --global --unset http.proxy && git config --global --unset https.proxy"
 }
