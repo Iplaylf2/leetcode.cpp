@@ -11,41 +11,33 @@ public:
     int longestValidParentheses(string s)
     {
         auto maximum = 0;
-        auto count_stack = stack<int>();
 
-        auto current_count = 0;
-        for (auto x : s)
+        int s_length = s.length();
+        auto begin_stack = new int[s_length + 1]{-1};
+        int begin_stack_ptr = 0;
+
+        for (int i = 0; s_length != i; i++)
         {
-            switch (x)
+            if ('(' == s[i])
             {
-            case '(':
-                count_stack.push(current_count);
-                current_count = 0;
-                break;
-            case ')':
-                if (0 == count_stack.size())
+                begin_stack_ptr++;
+                begin_stack[begin_stack_ptr] = i;
+            }
+            else
+            {
+                if (0 == begin_stack_ptr)
                 {
-                    maximum = max(maximum, current_count);
-
-                    current_count = 0;
+                    begin_stack[begin_stack_ptr] = i;
                 }
                 else
                 {
-                    current_count += 2 + count_stack.top();
-                    count_stack.pop();
+                    begin_stack_ptr--;
+                    maximum = max(maximum, i - begin_stack[begin_stack_ptr]);
                 }
-                break;
             }
         }
 
-        maximum = max(maximum, current_count);
-
-        while (!count_stack.empty())
-        {
-            maximum = max(maximum, count_stack.top());
-
-            count_stack.pop();
-        }
+        delete[] begin_stack;
 
         return maximum;
     }
