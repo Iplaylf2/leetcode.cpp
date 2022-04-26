@@ -1,8 +1,7 @@
 #include <iostream>
-#include "30-substring-with-concatenation-of-all-words/normal.cpp"
+#include "32-longest-valid-parentheses/normal.cpp"
 
 int main(int, char **)
 {
-    auto foo = vector<string>{"foo", "bar"};
-    Solution().findSubstring("barfoothefoobarman", foo);
+    Solution().longestValidParentheses("(()");
 }
